@@ -5,10 +5,22 @@ import Dashboard from '../pages/Dashboard'
 import CreateTrip from '../pages/CreateTrip'
 import TripsOverview from '../pages/TripsOverview'
 import TripDashboard from '../pages/TripDashboard'
+import AdminPanel from '../pages/AdminPanel'
+import Cookies from 'js-cookie';
+import jwt_decode from 'jwt-decode'
 
+
+const getUserRole = () => {
+  const token = Cookies.get('token');
+  if (!token) return null;
+
+  // Декодуємо JWT (за допомогою бібліотеки, наприклад, `jwt-decode`)
+  const decodedToken = jwt_decode(token);
+  return decodedToken?.role;  // Якщо токен має роль
+}
 
 const isAuthenticated = () => {
-  return localStorage.getItem('token') !== null
+  return Cookies.get('token') !== undefined;
 }
 
 export default function AppRouter() {
@@ -33,6 +45,10 @@ export default function AppRouter() {
       <Route
         path="/trip/:id/dashboard"
         element={isAuthenticated() ? <TripDashboard /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/admin"
+        element={isAuthenticated() ? <AdminPanel /> : <Navigate to="/login" />}
       />
 
     </Routes>

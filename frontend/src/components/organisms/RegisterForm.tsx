@@ -6,29 +6,54 @@ export default function RegisterForm() {
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    localStorage.setItem('token', 'mock-token')
-    navigate('/dashboard')
+
+    try {
+      const response = await fetch('http://localhost:8000/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          email: username, // можна зробити окреме поле email, якщо хочеш
+          password: password,
+        }),
+      })
+
+      if (!response.ok) {
+        alert('Помилка при реєстрації ❌')
+        return
+      }
+
+      alert('Успішно зареєстровано! 🎉')
+      navigate('/login')
+    } catch (error) {
+      alert('Сервер недоступний 😢')
+    }
   }
 
   return (
     <form onSubmit={handleSubmit}>
+      <h2>Реєстрація</h2>
       <input
         type="text"
-        placeholder="Username"
+        placeholder="Username або Email"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        required
       />
       <br />
       <input
         type="password"
-        placeholder="Password"
+        placeholder="Пароль"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
       <br />
-      <button type="submit">Register</button>
+      <button type="submit">Зареєструватись</button>
     </form>
   )
 }
