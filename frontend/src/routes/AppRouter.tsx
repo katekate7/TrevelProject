@@ -1,32 +1,32 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Register from '../pages/Register'
-import Login from '../pages/Login'
-import Dashboard from '../pages/Dashboard'
-import CreateTrip from '../pages/CreateTrip'
-import TripsOverview from '../pages/TripsOverview'
-import TripDashboard from '../pages/TripDashboard'
-import AdminPanel from '../pages/AdminPanel'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Register from '../pages/Register';
+import Login from '../pages/Login';
+import Dashboard from '../pages/Dashboard';
+import CreateTrip from '../pages/CreateTrip';
+import TripsOverview from '../pages/TripsOverview';
+import TripDashboard from '../pages/TripDashboard';
+import AdminPanel from '../pages/AdminPanel';
 import Cookies from 'js-cookie';
-import jwt_decode from 'jwt-decode'
-
+import { jwtDecode } from 'jwt-decode';
+import HomePage from '../pages/HomePage';
 
 const getUserRole = () => {
   const token = Cookies.get('token');
   if (!token) return null;
 
-  // Декодуємо JWT (за допомогою бібліотеки, наприклад, `jwt-decode`)
-  const decodedToken = jwt_decode(token);
-  return decodedToken?.role;  // Якщо токен має роль
-}
+  // Правильне використання jwtDecode
+  const decodedToken: any = jwtDecode(token);
+  return decodedToken?.role;
+};
 
 const isAuthenticated = () => {
   return Cookies.get('token') !== undefined;
-}
+};
 
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<HomePage/>} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route
@@ -41,7 +41,6 @@ export default function AppRouter() {
         path="/trips"
         element={isAuthenticated() ? <TripsOverview /> : <Navigate to="/login" />}
       />
-
       <Route
         path="/trip/:id/dashboard"
         element={isAuthenticated() ? <TripDashboard /> : <Navigate to="/login" />}
@@ -50,7 +49,6 @@ export default function AppRouter() {
         path="/admin"
         element={isAuthenticated() ? <AdminPanel /> : <Navigate to="/login" />}
       />
-
     </Routes>
-  )
+  );
 }
