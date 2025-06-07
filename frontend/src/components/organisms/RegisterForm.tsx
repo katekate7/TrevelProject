@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 export default function RegisterForm() {
   const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
@@ -16,35 +17,47 @@ export default function RegisterForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: username,
-          email: username, // можна зробити окреме поле email, якщо хочеш
-          password: password,
+          username,
+          email,
+          password,
         }),
       })
 
       if (!response.ok) {
-        alert('Помилка при реєстрації ❌')
+        const errorData = await response.json()
+        alert('❌ Помилка: ' + (errorData.error || 'Невідомо'))
         return
       }
 
-      alert('Успішно зареєстровано! 🎉')
+      alert('✅ Успішно зареєстровано!')
       navigate('/login')
     } catch (error) {
-      alert('Сервер недоступний 😢')
+      alert('❌ Сервер недоступний 😢')
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} noValidate>
       <h2>Реєстрація</h2>
+
       <input
         type="text"
-        placeholder="Username або Email"
+        placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
       />
       <br />
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <br />
+
       <input
         type="password"
         placeholder="Пароль"
@@ -53,6 +66,7 @@ export default function RegisterForm() {
         required
       />
       <br />
+
       <button type="submit">Зареєструватись</button>
     </form>
   )
