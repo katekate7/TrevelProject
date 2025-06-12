@@ -1,6 +1,17 @@
+// api.js
 import axios from 'axios';
 
-export default axios.create({
-  baseURL: '/api',
-  withCredentials: true,
+const api = axios.create({
+  baseURL: 'http://localhost:5173/api',
 });
+
+// Припустимо, що ви зберігаєте JWT в localStorage
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;
