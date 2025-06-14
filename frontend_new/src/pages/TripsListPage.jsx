@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api';
 
-export default function TripsListPage({ trips }) {
+export default function TripsListPage() {
   const navigate = useNavigate();
+  const [trips, setTrips] = useState([]);
+
+  useEffect(() => {
+    api.get('/trips')
+      .then(res => setTrips(res.data))
+      .catch(console.error);
+  }, []);
 
   return (
     <div style={{ maxWidth: 600, margin: '2rem auto' }}>
