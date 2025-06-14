@@ -40,7 +40,7 @@ export default function FirstTripPage() {
     e.preventDefault();
     try {
       await api.post('/trips/add', { country, city });
-      navigate('/dashboard');
+      navigate(`/city/${encodeURIComponent(city)}/${encodeURIComponent(country)}`);
     } catch (err) {
       console.error(err);
       alert('Не вдалося створити поїздку');
