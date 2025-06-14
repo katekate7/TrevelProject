@@ -1,26 +1,42 @@
-import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import debounce from 'lodash.debounce';
 import api from '../api';
-
-import countries from 'i18n-iso-countries';
-import enLocale  from 'i18n-iso-countries/langs/en.json';
-
-// Реєструємо англійську локаль (назви країн англійською)
-countries.registerLocale(enLocale);
+import { useNavigate } from 'react-router-dom';
 
 export default function FirstTripPage() {
   const navigate = useNavigate();
+
   const [country, setCountry] = useState('');
-  const [city,    setCity]    = useState('');
+  const [city, setCity] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
-  // Підготовка списку країн лише раз
-  const countryOptions = useMemo(() => {
-    return Object.entries(
-      countries.getNames('en', { select: 'official' })
-    ).map(([code, name]) => ({ code, name }));
-  }, []);
+  const fetchCities = debounce(async (query) => {
+    if (!query) return setSuggestions([]);
 
-  const handleSubmit = async e => {
+    try {
+      const response = await api.get(`/cities?q=${encodeURIComponent(query)}`);
+      setSuggestions(response.data);
+    } catch (err) {
+      console.error('Помилка під час отримання міст:', err);
+    }
+  }, 300);
+
+  // ...
+
+
+  const handleCityChange = (e) => {
+    const value = e.target.value;
+    setCity(value);
+    fetchCities(value);
+  };
+
+  const handleSelectSuggestion = (suggestion) => {
+    setCity(suggestion.city);
+    setCountry(suggestion.country);
+    setSuggestions([]);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await api.post('/trips/add', { country, city });
@@ -35,22 +51,30 @@ export default function FirstTripPage() {
     <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: '2rem auto' }}>
       <h2>Куди ви хочете поїхати цього разу?</h2>
 
-      <label>Країна:</label>
-      <select value={country} onChange={e => setCountry(e.target.value)} required>
-        <option value="">— оберіть країну —</option>
-        {countryOptions.map(c => (
-          <option key={c.code} value={c.name}>{c.name}</option>
-        ))}
-      </select>
-
       <label>Місто:</label>
       <input
         type="text"
         value={city}
-        onChange={e => setCity(e.target.value)}
+        onChange={handleCityChange}
         placeholder="Введіть місто"
         required
       />
+
+      {suggestions.length > 0 && (
+        <ul style={{ border: '1px solid #ccc', padding: 0, listStyle: 'none' }}>
+          {suggestions.map((s, i) => (
+            <li
+              key={i}
+              style={{ padding: '0.5rem', cursor: 'pointer' }}
+              onClick={() => handleSelectSuggestion(s)}
+            >
+              {s.label}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <input type="hidden" value={country} />
 
       <button type="submit">Почати подорож</button>
     </form>

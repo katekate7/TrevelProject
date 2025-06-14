@@ -4,3 +4,4 @@ export default axios.create({
   baseURL: '/api',
   withCredentials: true,
 });
+
