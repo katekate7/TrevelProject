@@ -6,6 +6,8 @@ import FirstTripPage from './pages/FirstTripPage';
 import TripsListPage from './pages/TripsListPage';
 import CityPage from './pages/CityPage';
 import TripDetailPage from './pages/TripDetailPage';
+import WeatherPage from './pages/WeatherPage';
+
 
 
 export default function App() {
@@ -17,6 +19,8 @@ export default function App() {
       <Route path="/trips" element={<TripsListPage />} />
       <Route path="/city/:city/:country" element={<CityPage />} />
       <Route path="/trip/:id" element={<TripDetailPage />} />
+      <Route path="/trip/:id/weather" element={<WeatherPage />} />
+
     </Routes>
   );
 }
