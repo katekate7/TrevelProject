@@ -1,6 +1,6 @@
 // src/pages/WeatherPage.jsx
-import React, {useState, useEffect} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
 
 export default function WeatherPage() {
@@ -8,13 +8,27 @@ export default function WeatherPage() {
   const nav    = useNavigate();
   const [forecast, setForecast] = useState([]);
   const [loading,  setLoading]  = useState(true);
+  const [updating, setUpdating] = useState(false);
 
-  useEffect(() => {
+  // Функція завантаження та трансформації прогнозу
+  const loadForecast = () => {
+    setLoading(true);
     api.get(`/trips/${id}/weather`)
       .then(r => setForecast(r.data))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [id]);
+  };
+
+  // Оновлення через кнопку: перезапитуємо вже готовий GET
+  const updateForecast = () => {
+    setUpdating(true);
+    api.patch(`/trips/${id}/weather/update`)
+      .then(() => loadForecast())
+      .catch(console.error)
+      .finally(() => setUpdating(false));
+  };
+
+  useEffect(loadForecast, [id]);
 
   if (loading) return <p>Завантаження погоди…</p>;
   if (!Array.isArray(forecast) || forecast.length === 0) {
@@ -25,8 +39,24 @@ export default function WeatherPage() {
     <div className="flex h-screen">
       <nav className="w-64 bg-gray-100 p-4">…таке саме меню…</nav>
       <main className="flex-1 p-6 overflow-auto">
-        <button onClick={()=>nav(-1)} className="mb-4 text-blue-500">← Назад</button>
-        <h2 className="text-2xl mb-4">Прогноз погоди</h2>
+        <button 
+          onClick={() => nav(-1)} 
+          className="mb-4 text-blue-500"
+        >
+          ← Назад
+        </button>
+
+        <h2 className="text-2xl mb-2">Прогноз погоди</h2>
+
+        {/* Оновити прогноз */}
+        <button
+          onClick={updateForecast}
+          disabled={updating}
+          className="mb-6 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+        >
+          {updating ? 'Оновлення…' : 'Оновити прогноз'}
+        </button>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {forecast.map(day => {
             const date = new Date(day.dt * 1000).toLocaleDateString();
