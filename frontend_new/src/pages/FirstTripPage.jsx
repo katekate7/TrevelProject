@@ -47,6 +47,7 @@ export default function FirstTripPage() {
       });
       const tripId = response.data.id;
       // Перехід на сторінку деталей поїздки
+      await api.patch(`/trips/${tripId}/weather/update`);
       navigate(`/trip/${encodeURIComponent(tripId)}`);
     } catch (err) {
       console.error(err);
