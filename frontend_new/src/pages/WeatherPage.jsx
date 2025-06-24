@@ -6,11 +6,12 @@ import api from '../api';
 export default function WeatherPage() {
   const { id } = useParams();
   const nav    = useNavigate();
+
   const [forecast, setForecast] = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  // Функція завантаження та трансформації прогнозу
+  // ── завантаження прогнозу ───────────────────────
   const loadForecast = () => {
     setLoading(true);
     api.get(`/trips/${id}/weather`)
@@ -19,7 +20,7 @@ export default function WeatherPage() {
       .finally(() => setLoading(false));
   };
 
-  // Оновлення через кнопку: перезапитуємо вже готовий GET
+  // ── оновити прогноз і одразу перезавантажити ───
   const updateForecast = () => {
     setUpdating(true);
     api.patch(`/trips/${id}/weather/update`)
@@ -31,24 +32,34 @@ export default function WeatherPage() {
   useEffect(loadForecast, [id]);
 
   if (loading) return <p>Завантаження погоди…</p>;
+
   if (!Array.isArray(forecast) || forecast.length === 0) {
-    return <p>Прогноз недоступний</p>;
+    return (
+      <div className="p-4">
+        <button onClick={() => nav(-1)} className="text-blue-500 mb-4">← Назад</button>
+        <p className="text-gray-600">Прогноз наразі недоступний. Спробуйте оновити пізніше.</p>
+        <button
+          onClick={updateForecast}
+          disabled={updating}
+          className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+        >
+          {updating ? 'Оновлення…' : 'Спробувати оновити ще раз'}
+        </button>
+      </div>
+    );
   }
 
   return (
     <div className="flex h-screen">
       <nav className="w-64 bg-gray-100 p-4">…таке саме меню…</nav>
+
       <main className="flex-1 p-6 overflow-auto">
-        <button 
-          onClick={() => nav(-1)} 
-          className="mb-4 text-blue-500"
-        >
+        <button onClick={() => nav(-1)} className="mb-4 text-blue-500">
           ← Назад
         </button>
 
         <h2 className="text-2xl mb-2">Прогноз погоди</h2>
 
-        {/* Оновити прогноз */}
         <button
           onClick={updateForecast}
           disabled={updating}
