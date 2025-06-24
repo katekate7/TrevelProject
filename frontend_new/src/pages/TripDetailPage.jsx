@@ -35,6 +35,11 @@ export default function TripDetailPage() {
               Погода
             </button>
           </li>
+          <li>
+            <button onClick={() => navigate(`/trip/${id}/sightseeings`)} className="block w-full text-left">
+              Sightseeings
+            </button>
+          </li>
           {/* Можна додати ще пункти типу "Речі", "Місця", "Маршрут" */}
         </ul>
       </nav>
