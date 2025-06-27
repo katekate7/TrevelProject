@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function TripsListPage({ trips, onAddTrip }) {
+export default function TripsListPage({ trips, onAddTrip, onDeleteTrip }) {
   const navigate = useNavigate();
 
   return (
@@ -13,16 +13,35 @@ export default function TripsListPage({ trips, onAddTrip }) {
           <li
             key={trip.id}
             style={{
-              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               padding: '0.5rem 0',
               borderBottom: '1px solid #eee',
             }}
-            onClick={() => navigate(`/trip/${trip.id}`)}
           >
-            <strong>{trip.country}</strong>, {trip.city}
-            <div style={{ fontSize: '0.9rem', color: '#555' }}>
-              {trip.startDate} — {trip.endDate}
+            <div
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/trip/${trip.id}`)}
+            >
+              <strong>{trip.country}</strong>, {trip.city}
+              <div style={{ fontSize: '0.9rem', color: '#555' }}>
+                {trip.startDate} — {trip.endDate}
+              </div>
             </div>
+            <button
+              onClick={() => onDeleteTrip(trip.id)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#c00',
+                cursor: 'pointer',
+                fontSize: '1.2rem',
+              }}
+              title="Видалити"
+            >
+              ×
+            </button>
           </li>
         ))}
       </ul>
