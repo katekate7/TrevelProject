@@ -9,6 +9,7 @@ import TripDetailPage from './pages/TripDetailPage';
 import WeatherPage from './pages/WeatherPage';
 import SightseeingsPage from './pages/SightseeingsPage';
 import TripRoutePage from './pages/TripRoutePage';
+import AdminPage   from './pages/AdminPage';
 
 
 
@@ -16,6 +17,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/admin" element={<AdminPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/first-trip" element={<FirstTripPage />} />
       <Route path="/trips" element={<TripsListPage />} />
