@@ -10,6 +10,7 @@ import WeatherPage from './pages/WeatherPage';
 import SightseeingsPage from './pages/SightseeingsPage';
 import TripRoutePage from './pages/TripRoutePage';
 import AdminPage   from './pages/AdminPage';
+import ItemsPage   from './pages/ItemsPage';
 
 
 
@@ -26,6 +27,7 @@ export default function App() {
       <Route path="/trip/:id/weather" element={<WeatherPage />} />
       <Route path="/trip/:id/sightseeings" element={<SightseeingsPage />} />
       <Route path="/trip/:id/route" element={<TripRoutePage />} />
+      <Route path="/trip/:id/items" element={<ItemsPage   />} />
     </Routes>
   );
 }
