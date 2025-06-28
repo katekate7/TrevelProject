@@ -189,14 +189,18 @@ export default function AdminPage() {
                              items.map(x => x.id === it.id ? { ...x, name: e.target.value } : x)
                            )}/>
                   </td>
-                  <td style={{ textAlign:'center' }}>
-                    <input type="checkbox" checked={it.important}
-                           onChange={() => {
-                             const upd = items.map(x =>
-                               x.id === it.id ? { ...x, important: !x.important } : x
-                             );
-                             setItems(upd);
-                           }}/>
+                  <td style={{ textAlign: 'center' }}>
+                    <input
+                      type="checkbox"
+                      checked={it.important}
+                      className={it.important ? 'accent-red-600' : 'accent-blue-600'}
+                      onChange={() => {
+                        const upd = items.map(x =>
+                          x.id === it.id ? { ...x, important: !x.important } : x
+                        );
+                        setItems(upd);
+                      }}
+                    />
                   </td>
                   <td>
                     <button onClick={() => updateItem(it)}>Save</button>
