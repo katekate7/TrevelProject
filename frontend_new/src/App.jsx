@@ -11,13 +11,14 @@ import SightseeingsPage from './pages/SightseeingsPage';
 import TripRoutePage from './pages/TripRoutePage';
 import AdminPage   from './pages/AdminPage';
 import ItemsPage   from './pages/ItemsPage';
-
+import HomePage from './pages/HomePage'
 
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/start" element={<Home />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/first-trip" element={<FirstTripPage />} />

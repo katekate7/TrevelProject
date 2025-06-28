@@ -51,19 +51,25 @@ export default function ItemsPage() {
       <button onClick={() => nav(-1)} className="mb-4 text-blue-500">← Назад</button>
       <h1 className="text-2xl font-bold mb-4">Речі для пакування</h1>
 
-      <ul className="space-y-2">
+      <ul className="space-y-2 list-disc pl-4">
         {items.map(it => (
-          <li key={it.id} className="flex items-center gap-3">
-            <input type="checkbox"
-                   className="h-5 w-5"
-                   checked={checked.has(it.id)}
-                   onChange={() => toggle(it.id)}/>
-            <span className={`flex-1 ${it.important ? 'text-red-600 font-semibold' : ''}`}>
-              {it.name}
-            </span>
+          <li
+            key={it.id}
+            className={`flex items-center gap-3
+                        ${it.important ? 'text-red-600 font-semibold marker:text-red-600' : ''}`}
+          >
+            <input
+              type="checkbox"
+              className={`h-5 w-5 rounded
+                          ${it.important ? 'accent-red-600' : 'accent-blue-600'}`}
+              checked={checked.has(it.id)}
+              onChange={() => toggle(it.id)}
+            />
+            <span className="flex-1">{it.name}</span>
           </li>
         ))}
       </ul>
+
 
       <button onClick={() => setShow(true)}
               className="mt-6 px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">
