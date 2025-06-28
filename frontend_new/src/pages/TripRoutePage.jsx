@@ -1,16 +1,11 @@
-// src/pages/TripRoutePage.jsx
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
-  MapContainer,
-  TileLayer,
-  Polyline,
-  Marker,
-  Popup,
+  MapContainer, TileLayer, Polyline, Marker, Popup
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import openrouteservice from 'openrouteservice-js';
-import api from '../api';
+import { fetchTripPlaces } from '../api';
 
 const MODES = [
   { id: 'driving-car', label: '🚗', title: 'Car' },
@@ -20,99 +15,59 @@ const MODES = [
 
 export default function TripRoutePage() {
   const { id } = useParams();
-  const nav = useNavigate();
-  const location = useLocation();
-  const wpFromState = location.state?.waypoints ?? [];
+  const navigate = useNavigate();
 
-  /* waypoints / map */
-  const [waypoints, setWaypoints] = useState(wpFromState);
+  const [waypoints,  setWaypoints]  = useState([]);
   const [coordinates, setCoordinates] = useState([]);
-  const [mode, setMode] = useState('foot-walking');
-  const [loading, setLoading] = useState(true);
+  const [mode,       setMode]       = useState('foot-walking');
+  const [loading,    setLoading]    = useState(true);
 
-  /* items list */
-  const [items, setItems] = useState([]);
-  const [packed, setPacked] = useState(new Set());
-
-  /* request-form state */
-  const [showReqForm, setShowReqForm] = useState(false);
-  const [reqName, setReqName] = useState('');
-  const [reqBusy, setReqBusy] = useState(false);
-
-  /* ─── fetch waypoints from DB after refresh ─────────────────────────── */
+  /* 1️⃣  Завантажуємо збережені пам’ятки */
   useEffect(() => {
-    if (wpFromState.length) return;
     (async () => {
       try {
-        const { data } = await api.get(`/trips/${id}/route`);
-        if (!data.waypoints?.length) throw 0;
-        setWaypoints(data.waypoints);
+        const { data } = await fetchTripPlaces(id);
+        if (!data.length) throw new Error();
+        setWaypoints(data);
       } catch {
         alert('Маршрут не знайдено');
-        nav(-1);
+        navigate(-1);
       }
     })();
   }, [id]);
 
-  /* ─── fetch items once ──────────────────────────────────────────────── */
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get('/items'); // already DESC by importance
-        setItems(data);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, []);
-
-  /* ─── build route whenever waypoints or mode change ─────────────────── */
+  /* 2️⃣  Будуємо маршрут коли є waypoints або міняється mode */
   useEffect(() => {
     if (!waypoints.length) return;
-
     let canceled = false;
     setLoading(true);
 
     (async () => {
-      const ors = new openrouteservice.Directions({
+      const ors    = new openrouteservice.Directions({
         api_key: import.meta.env.VITE_ORS_API_KEY,
       });
-      const coords = waypoints.map((w) => [w.lng, w.lat]);
-      const base = { coordinates: coords, profile: mode, format: 'geojson' };
-      const tryCalc = (p) =>
-        ors
-          .calculate(p)
-          .then((r) =>
-            r.features[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]),
-          );
+      const coords = waypoints.map(w => [w.lng, w.lat]);
+      const base   = { coordinates: coords, profile: mode, format: 'geojson' };
+
+      const tryCalc = p => ors.calculate(p)
+        .then(r => r.features[0].geometry.coordinates
+                        .map(([lng, lat]) => [lat, lng]));
 
       let line = null;
-      try {
-        const first =
-          mode === 'driving-car'
-            ? { ...base, radiuses: coords.map(() => 100) }
-            : base;
-        line = await tryCalc(first);
-      } catch {
-        try {
-          line = await tryCalc(base);
-        } catch {}
+      try { line = await tryCalc(base); }
+      catch {
+        try { line = await tryCalc(base); } catch {}
       }
 
       if (!canceled) {
         if (line) setCoordinates(line);
-        else if (!coordinates.length)
-          alert('Не вдалося побудувати маршрут');
         setLoading(false);
       }
     })();
 
-    return () => {
-      canceled = true;
-    };
+    return () => { canceled = true; };
   }, [waypoints, mode]);
 
-  /* ─── UI skeleton ──────────────────────────────────────────────────── */
   if (loading) return <p className="p-6">Завантаження маршруту…</p>;
   if (!waypoints.length)
     return <p className="p-6 text-red-600">Маршрут не знайдено</p>;
@@ -121,14 +76,14 @@ export default function TripRoutePage() {
 
   return (
     <div className="p-6 space-y-4">
-      <button onClick={() => nav(-1)} className="text-blue-500">
+      <button onClick={() => navigate(-1)} className="text-blue-500">
         ← Назад
       </button>
       <h1 className="text-2xl font-bold">Маршрут поїздки</h1>
 
       {/* transport buttons */}
       <div className="flex gap-2">
-        {MODES.map((m) => (
+        {MODES.map(m => (
           <button
             key={m.id}
             title={m.title}
@@ -143,123 +98,18 @@ export default function TripRoutePage() {
       </div>
 
       {/* map */}
-      <MapContainer
-        center={center}
-        zoom={13}
-        style={{ height: '60vh', width: '100%' }}
-      >
+      <MapContainer center={center} zoom={13} style={{height:'60vh'}}>
         <TileLayer
           attribution="&copy; OpenStreetMap"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {coordinates.length > 0 && (
-          <Polyline positions={coordinates} color="blue" />
-        )}
-        {waypoints.map((wp, i) => (
-          <Marker position={[wp.lat, wp.lng]} key={i}>
+        <Polyline positions={coordinates} />
+        {waypoints.map((wp,i) => (
+          <Marker key={i} position={[wp.lat, wp.lng]}>
             <Popup>{wp.title}</Popup>
           </Marker>
         ))}
       </MapContainer>
-
-      {/* comment placeholder */}
-      <div className="prose max-w-none">
-        <h2>Коментар до маршруту</h2>
-        <p>
-          Тут буде текст з описом маршруту, цікавими фактами або нотатками
-          користувача.
-        </p>
-      </div>
-
-      {/* packing list */}
-      <div className="prose max-w-none">
-        <h2>Перелік речей</h2>
-
-        <ul className="space-y-2">
-          {items.map((it) => (
-            <li key={it.id} className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                className="h-5 w-5 shrink-0"
-                checked={packed.has(it.id)}
-                onChange={() =>
-                  setPacked((s) => {
-                    const n = new Set(s);
-                    n.has(it.id) ? n.delete(it.id) : n.add(it.id);
-                    return n;
-                  })
-                }
-              />
-              <span className="flex-1">{it.name}</span>
-              <span className="text-xs text-gray-500">
-                lvl&nbsp;{it.importanceLevel}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <button
-          className="mt-4 px-4 py-2 rounded bg-amber-500 text-white hover:bg-amber-600"
-          onClick={() => setShowReqForm(true)}
-        >
-          Request New Item
-        </button>
-      </div>
-
-      {/* ─────────── Request-Item Modal ─────────── */}
-      {showReqForm && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow w-full max-w-md space-y-4">
-            <h2 className="text-xl font-bold">
-              Запропонувати новий предмет
-            </h2>
-
-            <input
-              type="text"
-              className="w-full border px-3 py-2 rounded"
-              placeholder="Назва предмета"
-              value={reqName}
-              onChange={(e) => setReqName(e.target.value)}
-              disabled={reqBusy}
-            />
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => {
-                  if (!reqBusy) setShowReqForm(false);
-                }}
-                className="px-4 py-2 text-gray-600 hover:underline disabled:opacity-50"
-                disabled={reqBusy}
-              >
-                Скасувати
-              </button>
-
-              <button
-                onClick={async () => {
-                  if (!reqName.trim()) return;
-                  try {
-                    setReqBusy(true);
-                    await api.post('/item-requests', {
-                      name: reqName.trim(),
-                    });
-                    alert('Запит надіслано!');
-                    setShowReqForm(false);
-                    setReqName('');
-                  } catch {
-                    alert('Помилка при надсиланні запиту');
-                  } finally {
-                    setReqBusy(false);
-                  }
-                }}
-                className="px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 disabled:opacity-50"
-                disabled={reqBusy}
-              >
-                {reqBusy ? 'Надсилання…' : 'Надіслати'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
