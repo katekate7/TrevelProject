@@ -40,6 +40,19 @@ export default function TripDetailPage() {
               Sightseeings
             </button>
           </li>
+          <li>
+            <button onClick={() => navigate(`/trip/${id}/route`)} className="block w-full text-left">
+                  Маршрут
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => navigate(`/trip/${id}/items`)}
+              className="block w-full text-left"
+            >
+              Речі
+            </button>
+          </li>
           {/* Можна додати ще пункти типу "Речі", "Місця", "Маршрут" */}
         </ul>
       </nav>
