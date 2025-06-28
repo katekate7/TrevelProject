@@ -19,18 +19,22 @@ export default function ItemsPage() {
        .catch(console.error);
   }, []);
 
-  // 2️⃣ — подгружаем, что пользователь уже взял
-  useEffect(() => {
-    api.get('/user/items')
-       .then(r => {
-         // ожидаем массив { itemId, taken }
-         const takenIds = r.data
-           .filter(entry => entry.taken)
-           .map(entry => entry.itemId);
-         setChecked(new Set(takenIds));
-       })
-       .catch(console.error);
-  }, []);
+    useEffect(() => {
+    // 1) всі речі
+    api.get('/api/items')
+        .then(r => setItems(r.data))
+        .catch(console.error);
+
+    // 2) які вже взяв поточний користувач
+    api.get('/api/users/items')
+        .then(r => {
+        const takenIds = r.data
+            .filter(x => x.taken)
+            .map(x => x.itemId);
+        setChecked(new Set(takenIds));
+        })
+        .catch(console.error);
+    }, []);
 
   // 3️⃣ — переключаем взял/не взял
   const toggle = id => {
