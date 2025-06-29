@@ -1,32 +1,24 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+// src/pages/HomePage.jsx
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Parallax from "./Parallax";
+import "../styles/globals.css";  // переконайтеся, що підхоплюєте стилі
 
 export default function HomePage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <div style={{
-      display: 'flex',
-      height: '100vh',
-      justifyContent: 'center',
-      alignItems: 'center',
-      background: '#f9fafb'
-    }}>
-      <button
-        onClick={() => navigate('/start')}
-        style={{
-          padding: '1rem 2rem',
-          fontSize: '1.25rem',
-          backgroundColor: '#2563eb',
-          color: 'white',
-          border: 'none',
-          borderRadius: '0.375rem',
-          cursor: 'pointer',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
-        }}
-      >
-        Заплануй свою подорожі
-      </button>
-    </div>
-  )
+    <>
+      <Parallax />
+
+      <section className="about">
+        <h2>Lorem ipsum</h2>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit laborum
+          ipsam corrupti asperiores magnam quos cumque animi tempore vero
+          repellendus...
+        </p>
+      </section>
+    </>
+  );
 }
