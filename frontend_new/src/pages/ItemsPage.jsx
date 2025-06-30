@@ -51,24 +51,30 @@ export default function ItemsPage() {
       <button onClick={() => nav(-1)} className="mb-4 text-blue-500">← Назад</button>
       <h1 className="text-2xl font-bold mb-4">Речі для пакування</h1>
 
-      <ul className="space-y-2 list-disc pl-4">
-        {items.map(it => (
-          <li
-            key={it.id}
-            className={`flex items-center gap-3
-                        ${it.important ? 'text-red-600 font-semibold marker:text-red-600' : ''}`}
-          >
-            <input
-              type="checkbox"
-              className={`h-5 w-5 rounded
-                          ${it.important ? 'accent-red-600' : 'accent-blue-600'}`}
-              checked={checked.has(it.id)}
-              onChange={() => toggle(it.id)}
-            />
-            <span className="flex-1">{it.name}</span>
-          </li>
-        ))}
-      </ul>
+          <ul className="space-y-2">
+            {items.map(it => (
+              <li
+                key={it.id}
+                className={`
+                  flex items-center gap-3 rounded-md px-3 py-2
+                  ${it.important && !checked.has(it.id)
+                    ? 'border-2 border-red-500 bg-red-50'
+                    : 'border border-gray-300'}
+                  ${it.important ? 'font-semibold' : ''}
+                `}
+              >
+                <input
+                  type="checkbox"
+                  className={`h-5 w-5 rounded
+                              ${it.important ? 'accent-red-600 ring-2 ring-red-300' : 'accent-blue-600'}`}
+                  checked={checked.has(it.id)}
+                  onChange={() => toggle(it.id)}
+                />
+                <span className="flex-1">{it.name}</span>
+              </li>
+            ))}
+          </ul>
+
 
 
       <button onClick={() => setShow(true)}
