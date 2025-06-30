@@ -70,3 +70,19 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@layer base {
+  body {
+    color: #fff; /* білий текст */
+    background-color: #1e1f48; /* темно-синій, або той що у тебе */
+  }
+
+  input, select, textarea, button {
+    color: #000 !important; /* чорний текст всередині форм */
+    background-color: #fff;  /* щоб інпути були світлими */
+  }
+
+  label {
+    color: #fff;
+  }
+}
