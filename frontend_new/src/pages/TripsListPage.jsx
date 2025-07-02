@@ -1,83 +1,151 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate }   from 'react-router-dom';
+import api               from '../api';
 
 /**
- * Сторінка зі списком подорожей.
- * Приймає:
- *   trips        — масив обʼєктів (може бути undefined на момент завантаження)
- *   onAddTrip    — callback для створення нової подорожі
- *   onDeleteTrip — callback для видалення подорожі
+ * props:
+ *   trips         — масив поїздок
+ *   onAddTrip     — клік «Нова подорож»
+ *   onDeleteTrip  — (id) => void
+ *   onUpdateTrip  — (updatedTrip) => void
  */
 export default function TripsListPage({
-  trips = [],
-  onAddTrip = () => {},
+  trips        = [],
+  onAddTrip    = () => {},
   onDeleteTrip = () => {},
+  onUpdateTrip = () => {},
 }) {
   const navigate = useNavigate();
+  const [editingId, setEdit]   = useState(null);
+  const [tmpStart,  setStart]  = useState('');
+  const [tmpEnd,    setEnd]    = useState('');
+  const [busy,      setBusy]   = useState(false);
 
-  // гарантуємо, що ми працюємо саме з масивом
-  const safeTrips = Array.isArray(trips) ? trips : [];
+  /* ── start editing one trip ─────────── */
+  const beginEdit = t => {
+    setEdit(t.id);
+    setStart(t.startDate);
+    setEnd(t.endDate);
+  };
 
-  if (!Array.isArray(trips)) {
-    // проп ще не ініціалізувався (наприклад, іде fetch)
-    return <p className="text-center mt-6">Завантаження…</p>;
-  }
+  /* ── cancel ─────────────────────────── */
+  const cancel = () => {
+    setEdit(null);
+    setStart('');
+    setEnd('');
+  };
 
-  if (safeTrips.length === 0) {
-    return (
-      <div className="text-center mt-6">
-        <p>У вас поки немає подорожей.</p>
-        <button onClick={onAddTrip} className="mt-2 underline text-blue-600">
-          Додати першу подорож
-        </button>
-      </div>
-    );
-  }
+  /* ── save ───────────────────────────── */
+  const save = async id => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const { data } = await api.patch(`/trips/${id}`, {
+        startDate: tmpStart,
+        endDate  : tmpEnd,
+      });                            // ← повертає оновлений trip
+      await api.patch(`/trips/${id}/weather/update`);
+      onUpdateTrip(data);
+      cancel();
+    } catch (e) {
+      console.error(e);
+      alert('Не вдалося зберегти');
+    } finally { setBusy(false); }
+  };
 
+  /* ── UI ─────────────────────────────── */
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto' }}>
-      <h2>Мої подорожі</h2>
+    <div>
+      <ul className="space-y-8">
+        {trips.map(trip => (
+          <li key={trip.id} className="border-b border-white/30 pb-6">
+            {/* ---------------- normal view ---------------- */}
+            {editingId !== trip.id && (
+              <div className="flex items-start justify-between gap-4">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => navigate(`/trip/${trip.id}`)}
+                >
+                  <p className="text-lg text-white">
+                    <span className="font-semibold">{trip.country}</span>, {trip.city}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    {trip.startDate} — {trip.endDate}
+                  </p>
+                </div>
 
-      <ul style={{ padding: 0, listStyle: 'none' }}>
-        {safeTrips.map((trip) => (
-          <li
-            key={trip.id}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '0.5rem 0',
-              borderBottom: '1px solid #eee',
-            }}
-          >
-            <div
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/trip/${trip.id}`)}
-            >
-              <strong>{trip.country}</strong>, {trip.city}
-              <div style={{ fontSize: '0.9rem', color: '#555' }}>
-                {trip.startDate} — {trip.endDate}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => beginEdit(trip)}
+                    className="text-indigo-400 hover:text-indigo-200"
+                    title="Редагувати дати"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => onDeleteTrip(trip.id)}
+                    className="text-red-600 hover:text-red-400"
+                    title="Видалити"
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
-            <button
-              onClick={() => onDeleteTrip(trip.id)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#c00',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-              }}
-              title="Видалити"
-            >
-              ×
-            </button>
+            {/* ---------------- edit mode ---------------- */}
+            {editingId === trip.id && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-white">Початок</label>
+                    <input
+                      type="date"
+                      value={tmpStart}
+                      onChange={e => setStart(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-white text-gray-900"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-white">Завершення</label>
+                    <input
+                      type="date"
+                      value={tmpEnd}
+                      onChange={e => setEnd(e.target.value)}
+                      className="w-full px-3 py-2 rounded bg-white text-gray-900"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => save(trip.id)}
+                    disabled={busy}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                  >
+                    {busy ? 'Збереження…' : 'Зберегти'}
+                  </button>
+                  <button
+                    onClick={cancel}
+                    className="px-4 py-2 text-gray-300 hover:text-white"
+                    disabled={busy}
+                  >
+                    Скасувати
+                  </button>
+                </div>
+              </div>
+            )}
           </li>
         ))}
       </ul>
 
-      <button onClick={onAddTrip} style={{ marginTop: '1rem' }}>
+      {/* -------- NEW TRIP BUTTON -------- */}
+      <button
+        onClick={onAddTrip}
+        className="mt-8 px-6 py-3 bg-black text-white rounded-lg hover:bg-indigo-600"
+      >
         Нова подорож
       </button>
     </div>

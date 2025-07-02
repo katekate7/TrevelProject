@@ -1,50 +1,55 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
-import FirstTripPage from './FirstTripPage';
-import TripsListPage from './TripsListPage';
+import api                from '../api';
+import FirstTripPage      from './FirstTripPage';
+import TripsListPage      from './TripsListPage';
 
 export default function Dashboard() {
-  const [trips, setTrips]     = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate              = useNavigate();
+  const [trips,    setTrips]   = useState([]);
+  const [loading,  setLoad]    = useState(true);
+  const navigate               = useNavigate();
 
+  /* ── initial load ──────────────────────── */
   useEffect(() => {
     api.get('/trips')
-      .then(res => setTrips(res.data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+       .then(r => setTrips(r.data))
+       .catch(console.error)
+       .finally(() => setLoad(false));
   }, []);
 
-  const handleDelete = async (id) => {
+  /* ── delete ────────────────────────────── */
+  const handleDelete = async id => {
     if (!window.confirm('Видалити цю подорож?')) return;
     try {
       await api.delete(`/trips/${id}`);
-      setTrips(old => old.filter(t => t.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert('Не вдалося видалити подорож');
+      setTrips(t => t.filter(tr => tr.id !== id));
+    } catch (e) {
+      console.error(e);
+      alert('Не вдалося видалити');
     }
   };
 
-  if (loading) return <p>Завантаження…</p>;
+  /* ── update dates (отримуємо новий trip із TripsListPage) ─ */
+  const handleUpdateTrip = updated => {
+    setTrips(list => list.map(t => (t.id === updated.id ? updated : t)));
+  };
 
-  if (trips.length === 0) {
-    return (
-      <FirstTripPage
-        onTripCreated={id => navigate(`/trip/${id}`)}
-      />
-    );
-  }
+  /* ── UI ─────────────────────────────────── */
+  if (loading)         return <p className="p-6">Завантаження…</p>;
+  if (trips.length===0)
+    return <FirstTripPage onTripCreated={id => navigate(`/trip/${id}`)} />;
 
   return (
-    <div style={{ maxWidth: 800, margin: '2rem auto' }}>
-      <h1>Головна панель</h1>
+    <div className="max-w-3xl mx-auto px-6">
+      <h1 className="text-xl md:text-2xl font-bold mb-6 text-white">
+        Мої подорожі
+      </h1>
+
       <TripsListPage
         trips={trips}
         onAddTrip={() => navigate('/first-trip')}
         onDeleteTrip={handleDelete}
+        onUpdateTrip={handleUpdateTrip}   /* ← новий */
       />
     </div>
   );
