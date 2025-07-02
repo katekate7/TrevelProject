@@ -51,8 +51,6 @@ export default function WeatherPage() {
 
   return (
     <div className="flex h-screen">
-      <nav className="w-64 bg-gray-100 p-4">…таке саме меню…</nav>
-
       <main className="flex-1 p-6 overflow-auto">
         <button onClick={() => nav(-1)} className="mb-4 text-blue-500">
           ← Назад
