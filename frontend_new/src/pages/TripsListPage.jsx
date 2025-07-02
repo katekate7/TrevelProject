@@ -1,15 +1,45 @@
-// src/pages/TripsListPage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function TripsListPage({ trips, onAddTrip, onDeleteTrip }) {
+/**
+ * Сторінка зі списком подорожей.
+ * Приймає:
+ *   trips        — масив обʼєктів (може бути undefined на момент завантаження)
+ *   onAddTrip    — callback для створення нової подорожі
+ *   onDeleteTrip — callback для видалення подорожі
+ */
+export default function TripsListPage({
+  trips = [],
+  onAddTrip = () => {},
+  onDeleteTrip = () => {},
+}) {
   const navigate = useNavigate();
+
+  // гарантуємо, що ми працюємо саме з масивом
+  const safeTrips = Array.isArray(trips) ? trips : [];
+
+  if (!Array.isArray(trips)) {
+    // проп ще не ініціалізувався (наприклад, іде fetch)
+    return <p className="text-center mt-6">Завантаження…</p>;
+  }
+
+  if (safeTrips.length === 0) {
+    return (
+      <div className="text-center mt-6">
+        <p>У вас поки немає подорожей.</p>
+        <button onClick={onAddTrip} className="mt-2 underline text-blue-600">
+          Додати першу подорож
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: 600, margin: '2rem auto' }}>
       <h2>Мої подорожі</h2>
+
       <ul style={{ padding: 0, listStyle: 'none' }}>
-        {trips.map(trip => (
+        {safeTrips.map((trip) => (
           <li
             key={trip.id}
             style={{
@@ -29,6 +59,7 @@ export default function TripsListPage({ trips, onAddTrip, onDeleteTrip }) {
                 {trip.startDate} — {trip.endDate}
               </div>
             </div>
+
             <button
               onClick={() => onDeleteTrip(trip.id)}
               style={{
@@ -45,6 +76,7 @@ export default function TripsListPage({ trips, onAddTrip, onDeleteTrip }) {
           </li>
         ))}
       </ul>
+
       <button onClick={onAddTrip} style={{ marginTop: '1rem' }}>
         Нова подорож
       </button>

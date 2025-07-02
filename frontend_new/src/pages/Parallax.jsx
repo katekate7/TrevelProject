@@ -62,7 +62,7 @@ export default function Parallax() {
         <img ref={mountain3} className="mountain-3" src="/parallax/mountain-3.svg" alt="" />
         <img ref={mountain2} className="mountain-2" src="/parallax/mountain-2.svg" alt="" />
         <img ref={mountain1} className="mountain-1" src="/parallax/mountain-1.svg" alt="" />
-        <img ref={sun} className="sun" src="/parallax/sun.svg" alt="" />
+        <img ref={sun} className="sun" src="/parallax/sun.png" alt="" />
         <img ref={cloudsBottom} className="clouds-bottom" src="/parallax/cloud-bottom.svg" alt="" />
         <img ref={cloudsLeft} className="clouds-left" src="/parallax/clouds-left.svg" alt="" />
         <img ref={cloudsRight} className="clouds-right" src="/parallax/clouds-right.svg" alt="" />

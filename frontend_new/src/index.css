@@ -1,44 +1,33 @@
+/* ────────────────────────────
+   Tailwind – має лишитися
+──────────────────────────── */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────
+   Базові (safe) глобальні стилі
+──────────────────────────── */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  color-scheme: light dark;      /* увімкне media-query для light/dark */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
+/* Посилання */
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
-a:hover {
-  color: #535bf2;
-}
+a:hover { color: #535bf2; }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* Кнопки: тільки мінімальний reset — усе оформлення робіть Tailwind-класами */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -50,39 +39,35 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
+button:hover       { border-color: #646cff; }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light-тема: тільки колір тексту, фон не чіпаємо — у вас уже є свій */
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  :root { color: #213547; }
+  a:hover { color: #747bff; }
 }
 
+/* ────────────────────────────
+   Tailwind layer: base-override
+──────────────────────────── */
 @layer base {
   body {
-    color: #fff; /* білий текст */
-    background-color: #1e1f48; /* темно-синій, або той що у тебе */
+    margin: 0;
+    /* БЕЗ display:flex  → ваш паралакс розтягується на всю ширину */
+    min-width: 320px;
+    min-height: 100vh;
+    overflow-x: hidden;   /* щоб анімації випадково не створювали скрол */
   }
 
-  input, select, textarea, button {
-    color: #000 !important; /* чорний текст всередині форм */
-    background-color: #fff;  /* щоб інпути були світлими */
+  /* Робимо інпути читабельними на темному фоні,
+     але не чіпаємо ваші власні класи, якщо вони є */
+  input, select, textarea {
+    @apply text-black bg-white;
   }
 
-  label {
-    color: #fff;
-  }
+  label { @apply text-white; }
 }

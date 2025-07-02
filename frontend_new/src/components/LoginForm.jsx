@@ -1,63 +1,74 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../api"; // axios instance with baseURL "/api" and withCredentials=true
+import { useState }   from 'react';
+import { useNavigate } from 'react-router-dom';
+import api             from '../api';
 
-export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(null);
+export default function LoginForm({ onNeedRegister, onForgotPassword }) {
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [message,  setMessage]  = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setMessage(null);
 
     try {
-      /* 1️⃣  POST /api/login  (cookie JWT створюється у браузері) */
-      await api.post("/login", { email, password });
+      await api.post('/login', { email, password });
+      const { data } = await api.get('/users/me');
 
-      /* 2️⃣  одразу дізнаємось ролі */
-      const { data } = await api.get("/users/me"); // { roles: [ ... ] }
-
-      /* 3️⃣  перенаправляємо */
-      if (data.roles.includes("ROLE_ADMIN")) {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate(data.roles.includes('ROLE_ADMIN') ? '/admin' : '/dashboard');
     } catch (err) {
-      console.error(err);
-      const msg = err.response?.data?.message || "❌ Помилка входу";
+      const msg = err.response?.data?.message || '❌ Помилка входу';
       setMessage(msg);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-xs mx-auto">
-      <h2 className="text-xl font-semibold text-center">Вхід</h2>
+    <form onSubmit={handleSubmit}
+          className="w-full flex flex-col gap-4 text-gray-800">
 
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-        className="border p-2 rounded"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Пароль"
-        required
-        className="border p-2 rounded"
-      />
+      <h2 className="text-xl font-semibold text-center text-gray-800">Вхід</h2>
 
-      <button type="submit" className="bg-blue-600 text-white py-2 rounded">
+      <input type="email"
+             className="border rounded p-3"
+             placeholder="Email"
+             value={email}
+             onChange={e => setEmail(e.target.value)}
+             required />
+
+      <input type="password"
+             className="border rounded p-3"
+             placeholder="Пароль"
+             value={password}
+             onChange={e => setPassword(e.target.value)}
+             required />
+
+      <button type="submit"
+              className="bg-blue-600 text-white py-3 rounded shadow-sm">
         Увійти
       </button>
 
-      {message && <p className="text-center text-sm mt-2">{message}</p>}
+      {message && (
+        <p className="text-center text-sm text-red-600">{message}</p>
+      )}
+
+      {/* Нижній блок посилань */}
+      <div className="text-sm text-center flex flex-col gap-2 mt-3">
+        <button type="button"
+                onClick={onForgotPassword}
+                className="text-blue-600 hover:underline">
+          Забули пароль?
+        </button>
+
+        <span>
+          У вас немає облікового запису?{' '}
+          <button type="button"
+                  onClick={onNeedRegister}
+                  className="text-blue-600 hover:underline">
+            Зареєструватися
+          </button>
+        </span>
+      </div>
     </form>
   );
 }
