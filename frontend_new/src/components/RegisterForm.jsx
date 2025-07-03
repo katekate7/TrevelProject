@@ -15,6 +15,8 @@ export default function RegisterForm({ onNeedLogin }) {
 
     try {
       await api.post('/users/register', { username, email, password });
+      await api.post('/login', { email, password });
+
       navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.error || '❌ Помилка реєстрації';
