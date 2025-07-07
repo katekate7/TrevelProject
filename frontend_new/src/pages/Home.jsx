@@ -1,10 +1,12 @@
 // src/pages/Home.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LoginForm    from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 
 export default function Home() {
   const [mode, setMode] = useState('login'); // 'login' або 'register'
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FF9091]">
@@ -43,7 +45,7 @@ export default function Home() {
                 <>
                   <LoginForm
                     onNeedRegister={() => setMode('register')}
-                    onForgotPassword={() => alert('TODO: password reset')}
+                    onForgotPassword={() => navigate('/forgot-password')}
                   />
 
                   {/* Нижній рядок лінків — як на другому макеті */}
@@ -59,7 +61,7 @@ export default function Home() {
                     </span>
 
                     <button
-                      onClick={() => alert('TODO: password reset')}
+                      onClick={() => navigate('/forgot-password')}
                       className="mt-2 sm:mt-0 font-semibold underline hover:text-[#d14b4c]"
                     >
                       Forget password?

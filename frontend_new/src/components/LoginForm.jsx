@@ -1,5 +1,5 @@
 // src/components/LoginForm.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
@@ -7,23 +7,47 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage]   = useState(null);
-  const navigate = useNavigate();
+  const navigate                = useNavigate();
 
+  // Clear any error messages when component mounts
+  useEffect(() => {
+    setMessage(null);
+  }, []);
+
+  /* ─────────────────── SUBMIT ─────────────────── */
   const handleSubmit = async e => {
     e.preventDefault();
     setMessage(null);
 
     try {
-      await api.post('/login', { email, password });
-      const { data } = await api.get('/users/me');
-      navigate(data.roles.includes('ROLE_ADMIN') ? '/admin' : '/dashboard');
+      const loginResponse = await api.post('/login', { email, password });
+      
+      // Store the JWT token if provided
+      if (loginResponse.data.token) {
+        localStorage.setItem('jwt_token', loginResponse.data.token);
+      }
+      
+      // Only try to get user data if login was successful
+      if (loginResponse.status === 200) {
+        const { data } = await api.get('/users/me');
+        navigate(data.roles.includes('ROLE_ADMIN') ? '/admin' : '/dashboard');
+      }
     } catch (err) {
-      setMessage(err.response?.data?.message || '❌ Помилка входу');
+      // Handle different types of errors more gracefully
+      if (err.response?.status === 401) {
+        setMessage('❌ Невірний email або пароль');
+      } else if (err.response?.data?.message) {
+        setMessage(`❌ ${err.response.data.message}`);
+      } else {
+        setMessage('❌ Помилка входу. Спробуйте ще раз.');
+      }
     }
   };
 
+  /* ─────────────────── RENDER ─────────────────── */
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
       {/* Email */}
       <input
         type="email"
@@ -32,8 +56,8 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
         value={email}
         onChange={e => setEmail(e.target.value)}
         className="
-          w-full bg-white bg-opacity-90 rounded-lg
-          py-3 px-4 placeholder-gray-500
+          w-full rounded-lg py-3 px-4
+          bg-white bg-opacity-90 placeholder-gray-500
           focus:outline-none focus:ring-2 focus:ring-white
         "
       />
@@ -46,25 +70,58 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
         value={password}
         onChange={e => setPassword(e.target.value)}
         className="
-          w-full bg-white bg-opacity-90 rounded-lg
-          py-3 px-4 placeholder-gray-500
+          w-full rounded-lg py-3 px-4
+          bg-white bg-opacity-90 placeholder-gray-500
           focus:outline-none focus:ring-2 focus:ring-white
         "
       />
 
-      {/* Submit */}
+      {/* Login button */}
       <button
         type="submit"
         className="
-          w-full border-2 border-white rounded-full
-          py-3 text-white font-semibold 
+          w-full py-3 rounded-full
+          bg-[#FF9091] border-2 border-white text-white font-semibold
+          transition hover:bg-opacity-90
         "
       >
         Login
       </button>
 
-      {/* Помилка (якщо є) */}
-      {message && <p className="text-center text-sm text-red-600">{message}</p>}
+      {/* Error message */}
+      {message && (
+        <p className="text-center text-sm text-red-600">{message}</p>
+      )}
+
+      {/* Links (без чорного фону) */}
+      <div className="mt-6 flex flex-col sm:flex-row sm:justify-between text-sm text-black">
+        <span>
+          Don’t have an account?{' '}
+          <button
+            type="button"
+            onClick={onNeedRegister}
+            className="
+              bg-transparent p-0 m-0
+              font-semibold underline hover:text-[#d14b4c]
+              focus:outline-none
+            "
+          >
+            Sign in
+          </button>
+        </span>
+
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          className="
+            bg-transparent p-0 m-0 mt-2 sm:mt-0
+            font-semibold underline hover:text-[#d14b4c]
+            focus:outline-none
+          "
+        >
+          Forget password?
+        </button>
+      </div>
     </form>
   );
 }

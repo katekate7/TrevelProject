@@ -8,6 +8,7 @@ export default function AdminPage() {
   const [items, setItems]   = useState([]);
   const [requests, setRequests] = useState([]);
   const [message, setMsg]   = useState('');
+  const [messageType, setMessageType] = useState('error'); // 'success' or 'error'
 
   /* форма «новий айтем» */
   const [newItem, setNewItem] = useState({ name: '', important: false });
@@ -41,8 +42,16 @@ export default function AdminPage() {
     const { username, email, password, role } = newUser;
     if (!username || !email || !password) return;
     axios.post('/users', newUser)
-         .then(() => { setNewUser({ username:'', email:'', password:'', role:'user' }); fetchUsers(); })
-         .catch(() => setMsg('Помилка створення'));
+         .then(() => { 
+           setNewUser({ username:'', email:'', password:'', role:'user' }); 
+           fetchUsers(); 
+           setMsg(`Користувача ${username} створено успішно`);
+           setMessageType('success');
+         })
+         .catch(() => {
+           setMsg('Помилка створення користувача');
+           setMessageType('error');
+         });
   };
 
   const updateUser = u =>
@@ -54,8 +63,23 @@ export default function AdminPage() {
     window.confirm('Видалити юзера?') &&
     axios.delete(`/users/${id}`).then(fetchUsers).catch(() => setMsg('Помилка'));
 
-  const resetPwd = id =>
-    axios.post(`/users/${id}/reset-password`).then(()=>setMsg('Лінк надіслано')).catch(()=>setMsg('Помилка'));
+  const resetPwd = id => {
+    const user = users.find(u => u.id === id);
+    if (!user) return;
+    
+    if (!window.confirm(`Надіслати лінк скидання пароля на ${user.email}?`)) return;
+    
+    axios.post(`/users/${id}/reset-password`)
+         .then(() => {
+           setMsg(`Лінк скидання пароля надіслано на ${user.email}`);
+           setMessageType('success');
+         })
+         .catch((err) => {
+           const errorMsg = err.response?.data?.error || 'Помилка відправки листа';
+           setMsg(`Помилка: ${errorMsg}`);
+           setMessageType('error');
+         });
+  };
 
   /* ───────── ITEM CRUD ───────── */
   const addItem = () =>
@@ -100,7 +124,18 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {message && <div style={{ color: 'red' }}>{message}</div>}
+      {message && (
+        <div style={{ 
+          color: messageType === 'success' ? 'green' : 'red',
+          padding: '10px',
+          backgroundColor: messageType === 'success' ? '#d4edda' : '#f8d7da',
+          border: `1px solid ${messageType === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
+          borderRadius: '4px',
+          marginBottom: '10px'
+        }}>
+          {message}
+        </div>
+      )}
 
       {/* ---------- USERS ---------- */}
       {tab === 'users' && (

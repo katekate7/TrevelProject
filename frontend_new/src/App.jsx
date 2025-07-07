@@ -12,6 +12,8 @@ import TripRoutePage from './pages/TripRoutePage';
 import AdminPage   from './pages/AdminPage';
 import ItemsPage   from './pages/ItemsPage';
 import HomePage from './pages/HomePage'
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import TripLayout         from './layouts/TripLayout';
 
 
@@ -25,6 +27,8 @@ export default function App() {
       <Route path="/first-trip" element={<FirstTripPage />} />
       <Route path="/trips" element={<TripsListPage />} />
       <Route path="/city/:city/:country" element={<CityPage />} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       
 
   <Route path="trip/:id" element={<TripLayout />}>
