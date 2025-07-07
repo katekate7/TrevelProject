@@ -39,15 +39,51 @@ export default function Home() {
         </h1>
 
         {/* Вміст картки */}
-        {mode === 'login' ? (
-          <LoginForm
-            onNeedRegister={() => setMode('register')}
-            onForgotPassword={() => alert('TODO: password reset')}
-          />
-        ) : (
-          <RegisterForm onNeedLogin={() => setMode('login')} />
-        )}
-      </div>
-    </div>
-  );
-}
+      {mode === 'login' ? (
+                <>
+                  <LoginForm
+                    onNeedRegister={() => setMode('register')}
+                    onForgotPassword={() => alert('TODO: password reset')}
+                  />
+
+                  {/* Нижній рядок лінків — як на другому макеті */}
+                  <div className="mt-6 flex flex-col sm:flex-row sm:justify-between text-sm text-black">
+                    <span>
+                      Don’t have an account?{' '}
+                      <button
+                        onClick={() => setMode('register')}
+                        className="font-semibold underline hover:text-[#d14b4c]"
+                      >
+                        Sign in
+                      </button>
+                    </span>
+
+                    <button
+                      onClick={() => alert('TODO: password reset')}
+                      className="mt-2 sm:mt-0 font-semibold underline hover:text-[#d14b4c]"
+                    >
+                      Forget password?
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <RegisterForm onNeedLogin={() => setMode('login')} />
+
+                  {/* Лінк назад до логіну — для режиму Register */}
+                  <div className="mt-6 text-sm text-center">
+                    Already have an account?{' '}
+                    <button
+                      onClick={() => setMode('login')}
+                      className="font-semibold underline hover:text-[#d14b4c]"
+                    >
+                      Log in
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      }
+//
