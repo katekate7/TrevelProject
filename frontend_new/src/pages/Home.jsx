@@ -29,13 +29,13 @@ export default function Home() {
         <h1
           className="
             absolute left-1/2 -translate-x-1/2
-            -top-14 sm:-top-16 md:-top-20   /* різні відступи */
+             -top-[4.5rem] sm:-top-[5rem] md:-top-[9.5rem]   /* різні відступи */
             text-white font-abril leading-none select-none
             text-[56px] sm:text-[72px] md:text-[96px] lg:text-[112px]
             z-10
           "
         >
-          {mode === 'login' ? 'Login' : 'Register'}
+          {mode === 'login' ? 'Login' : 'Register'} 
         </h1>
 
         {/* Вміст картки */}
