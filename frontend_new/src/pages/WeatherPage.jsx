@@ -36,7 +36,6 @@ export default function WeatherPage() {
   if (!Array.isArray(forecast) || forecast.length === 0) {
     return (
       <div className="p-4">
-        <button onClick={() => nav(-1)} className="text-blue-500 mb-4">← Назад</button>
         <p className="text-gray-600">Прогноз наразі недоступний. Спробуйте оновити пізніше.</p>
         <button
           onClick={updateForecast}
@@ -52,9 +51,6 @@ export default function WeatherPage() {
   return (
     <div className="flex h-screen">
       <main className="flex-1 p-6 overflow-auto">
-        <button onClick={() => nav(-1)} className="mb-4 text-blue-500">
-          ← Назад
-        </button>
 
         <h2 className="text-2xl mb-2">Прогноз погоди</h2>
 

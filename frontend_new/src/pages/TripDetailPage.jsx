@@ -21,9 +21,6 @@ export default function TripDetailPage() {
   /* ---------- контент сторінки ---------- */
   return (
     <div className="p-6 overflow-auto">
-      <button onClick={() => navigate(-1)} className="mb-4 text-blue-500">
-        ← Назад
-      </button>
 
       <h1 className="text-3xl font-bold mb-4">
         {trip.city}, {trip.country}

@@ -48,7 +48,6 @@ export default function ItemsPage() {
 
   return (
     <div className="p-6 max-w-md mx-auto">
-      <button onClick={() => nav(-1)} className="mb-4 text-blue-500">← Назад</button>
       <h1 className="text-2xl font-bold mb-4">Речі для пакування</h1>
 
       <ul className="space-y-2 list-disc pl-4">

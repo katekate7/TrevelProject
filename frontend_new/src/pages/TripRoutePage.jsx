@@ -76,9 +76,6 @@ export default function TripRoutePage() {
 
   return (
     <div className="p-6 space-y-4">
-      <button onClick={() => navigate(-1)} className="text-blue-500">
-        ← Назад
-      </button>
       <h1 className="text-2xl font-bold">Маршрут поїздки</h1>
 
       {/* transport buttons */}

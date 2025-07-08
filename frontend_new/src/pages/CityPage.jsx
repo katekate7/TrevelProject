@@ -43,7 +43,6 @@ export default function CityPage() {
 
       {/* Main content */}
       <main className="flex-1 p-6 overflow-auto">
-        <button onClick={() => navigate(-1)} className="mb-4 text-blue-500">← Назад</button>
         <h1 className="text-3xl font-bold mb-4">{city}, {country}</h1>
 
         {loading && <p>Завантаження...</p>}

@@ -133,18 +133,15 @@ export default function SightseeingsPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <button onClick={()=>navigate(-1)} className="mb-4 text-blue-500">
-        ← Назад
-      </button>
       <h1 className="text-3xl font-bold mb-6">
         Top 20 must-see у {trip.city}
       </h1>
       <ul className="space-y-6">
         {places.map(p=>(
-          <li key={p.id} className="border rounded-lg p-4 flex gap-4 shadow-sm">
+          <li key={p.id} className="border rounded-lg p-4 flex flex-col sm:flex-row gap-4 shadow-sm items-center sm:items-start">
             <input
               type="checkbox"
-              className="mt-1 h-5 w-5"
+              className="mt-1 h-5 w-5 self-start"
               checked={selectedTitles.has(p.title)}
               onChange={()=>toggle(p.title)}
             />
@@ -152,9 +149,9 @@ export default function SightseeingsPage() {
               <img src={p.imageUrl} alt={p.title}
                    className="w-40 h-28 object-cover rounded-md" />
             )}
-            <div>
-              <h2 className="text-xl font-semibold mb-1">{p.title}</h2>
-              <p className="text-gray-700">{p.desc}</p>
+            <div className="w-full">
+              <h2 className="text-xl font-semibold mb-1 text-white">{p.title}</h2>
+              <p className="text-white">{p.desc}</p>
               <p className="text-xs text-gray-400 mt-1">
                 👁 {p.views.toLocaleString()} views / 60 днів
               </p>
