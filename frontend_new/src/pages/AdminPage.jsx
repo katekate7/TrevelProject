@@ -108,22 +108,9 @@ export default function AdminPage() {
          .catch(()=>setMsg('Помилка'));
 
   /* ───────── UI ───────── */
-  const handleLogout = () => {
-    localStorage.removeItem('jwt_token');
-    nav('/start');
-  };
-
   return (
     <div style={{ padding: 20 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Admin Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 6, padding: '8px 18px', fontWeight: 600, cursor: 'pointer' }}
-        >
-          Log out
-        </button>
-      </div>
+      <h1>Admin Dashboard</h1>
 
       {/* вкладки */}
       <div style={{ marginBottom: 10 }}>

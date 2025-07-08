@@ -47,26 +47,7 @@ export default function Home() {
                     onNeedRegister={() => setMode('register')}
                     onForgotPassword={() => navigate('/forgot-password')}
                   />
-
-                  {/* Нижній рядок лінків — як на другому макеті */}
-                  <div className="mt-6 flex flex-col sm:flex-row sm:justify-between text-sm text-black">
-                    <span>
-                      Don’t have an account?{' '}
-                      <button
-                        onClick={() => setMode('register')}
-                        className="font-semibold underline hover:text-[#d14b4c]"
-                      >
-                        Sign in
-                      </button>
-                    </span>
-
-                    <button
-                      onClick={() => navigate('/forgot-password')}
-                      className="mt-2 sm:mt-0 font-semibold underline hover:text-[#d14b4c]"
-                    >
-                      Forget password?
-                    </button>
-                  </div>
+                  {/* (Duplicate bottom links removed, now only LoginForm renders them) */}
                 </>
               ) : (
                 <>
@@ -88,4 +69,3 @@ export default function Home() {
           </div>
         );
       }
-//
