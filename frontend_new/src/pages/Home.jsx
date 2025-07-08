@@ -52,17 +52,7 @@ export default function Home() {
               ) : (
                 <>
                   <RegisterForm onNeedLogin={() => setMode('login')} />
-
-                  {/* Лінк назад до логіну — для режиму Register */}
-                  <div className="mt-6 text-sm text-center">
-                    Already have an account?{' '}
-                    <button
-                      onClick={() => setMode('login')}
-                      className="font-semibold underline hover:text-[#d14b4c]"
-                    >
-                      Log in
-                    </button>
-                  </div>
+                  {/* (Duplicate login link removed, now only RegisterForm renders it) */}
                 </>
               )}
             </div>
