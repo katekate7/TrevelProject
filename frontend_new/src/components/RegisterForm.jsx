@@ -25,50 +25,83 @@ export default function RegisterForm({ onNeedLogin }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-4 text-gray-800">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Username */}
+      <input
+        type="text"
+        placeholder="Username"
+        required
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        className="
+          w-full rounded-lg py-3 px-4
+          bg-white bg-opacity-90 placeholder-gray-500
+          focus:outline-none focus:ring-2 focus:ring-white
+        "
+      />
 
-      <h2 className="text-xl font-semibold text-center text-gray-800">
-        Реєстрація
-      </h2>
+      {/* Email */}
+      <input
+        type="email"
+        placeholder="Email"
+        required
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        className="
+          w-full rounded-lg py-3 px-4
+          bg-white bg-opacity-90 placeholder-gray-500
+          focus:outline-none focus:ring-2 focus:ring-white
+        "
+      />
 
-      <input className="border rounded p-3"
-             placeholder="Username"
-             value={username}
-             onChange={e => setUsername(e.target.value)}
-             required />
+      {/* Password */}
+      <input
+        type="password"
+        placeholder="Пароль"
+        required
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        className="
+          w-full rounded-lg py-3 px-4
+          bg-white bg-opacity-90 placeholder-gray-500
+          focus:outline-none focus:ring-2 focus:ring-white
+        "
+      />
 
-      <input type="email"
-             className="border rounded p-3"
-             placeholder="Email"
-             value={email}
-             onChange={e => setEmail(e.target.value)}
-             required />
-
-      <input type="password"
-             className="border rounded p-3"
-             placeholder="Пароль"
-             value={password}
-             onChange={e => setPassword(e.target.value)}
-             required />
-
-      <button type="submit"
-              className="bg-blue-600 text-white py-3 rounded shadow-sm">
+      {/* Register button */}
+      <button
+        type="submit"
+        className="
+          w-full py-3 rounded-full
+          bg-[#FF9091] border-2 border-white text-white font-semibold
+          transition hover:bg-opacity-90
+        "
+      >
         Зареєструватися
       </button>
 
+      {/* Error message */}
       {message && (
         <p className="text-center text-sm text-red-600">{message}</p>
       )}
 
-      <p className="text-sm text-center mt-3">
-        Уже маєте акаунт?{' '}
-        <button type="button"
-                onClick={onNeedLogin}
-                className="text-blue-600 hover:underline">
-          Увійти
-        </button>
-      </p>
+      {/* Links (same style as login) */}
+      <div className="mt-6 flex flex-col sm:flex-row sm:justify-between text-sm text-black">
+        <span>
+          Уже маєте акаунт?{' '}
+          <button
+            type="button"
+            onClick={onNeedLogin}
+            className="
+              bg-transparent p-0 m-0
+              font-semibold underline hover:text-[#d14b4c]
+              focus:outline-none
+            "
+          >
+            Увійти
+          </button>
+        </span>
+      </div>
     </form>
   );
 }

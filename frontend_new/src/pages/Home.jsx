@@ -31,7 +31,7 @@ export default function Home() {
         <h1
           className="
             absolute left-1/2 -translate-x-1/2
-             -top-[4.5rem] sm:-top-[5rem] md:-top-[9.5rem]   /* різні відступи */
+            -top-[2.5rem] sm:-top-[3rem] md:-top-[6rem]   /* slightly higher than before */
             text-white font-abril leading-none select-none
             text-[56px] sm:text-[72px] md:text-[96px] lg:text-[112px]
             z-10

@@ -94,8 +94,8 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
       )}
 
       {/* Links (без чорного фону) */}
-      <div className="mt-6 flex flex-col sm:flex-row sm:justify-between text-sm text-black">
-        <span>
+      <div className="mt-6 flex flex-col text-sm text-black">
+        <span className="flex flex-row">
           Don’t have an account?{' '}
           <button
             type="button"
@@ -103,21 +103,18 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
             className="
               bg-transparent p-0 m-0
               font-semibold underline hover:text-[#d14b4c]
-              focus:outline-none
-            "
+              focus:outline-none ml-1"
           >
             Sign in
           </button>
         </span>
-
         <button
           type="button"
           onClick={onForgotPassword}
           className="
             bg-transparent p-0 m-0 mt-2 sm:mt-0
             font-semibold underline hover:text-[#d14b4c]
-            focus:outline-none
-          "
+            focus:outline-none self-start"
         >
           Forget password?
         </button>
