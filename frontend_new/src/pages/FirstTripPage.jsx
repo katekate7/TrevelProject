@@ -61,20 +61,20 @@ export default function FirstTripPage() {
         className="w-full max-w-lg bg-white/5 backdrop-blur rounded-2xl p-8 md:p-10 shadow-lg"
       >
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-6">
-          Нова подорож
+          New trip
         </h1>
 
         {/* city + start */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="relative">
             <label className="block text-sm font-medium text-white mb-1">
-              Місто
+              City
             </label>
             <input
               type="text"
               value={city}
               onChange={handleCityChange}
-              placeholder="Введіть місто"
+              placeholder="Write a city"
               className="w-full rounded-lg border border-white/20 bg-white/90 text-gray-900 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               required
             />
@@ -100,7 +100,7 @@ export default function FirstTripPage() {
 
           <div>
             <label className="block text-sm font-medium text-white mb-1">
-              Дата початку
+              Start date
             </label>
             <input
               type="date"
@@ -115,7 +115,7 @@ export default function FirstTripPage() {
         {/* end date */}
         <div className="mt-6">
           <label className="block text-sm font-medium text-white mb-1">
-            Дата завершення
+            End day
           </label>
           <input
             type="date"
@@ -131,7 +131,7 @@ export default function FirstTripPage() {
           type="submit"
           className="w-full md:w-auto mt-8 px-8 py-3 bg-black text-white text-lg font-semibold rounded-lg hover:bg-indigo-600 transition"
         >
-          Почати подорож
+          Start a new trip !
         </button>
       </form>
     </section>

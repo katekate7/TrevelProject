@@ -19,6 +19,11 @@ export default function AdminPage() {
   });
 
   const nav = useNavigate();
+  // ───────── LOGOUT ─────────
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // or sessionStorage, or cookie, depending on your auth
+    nav('/start');
+  };
 
   /* ───────── guard + первинне завантаження ───────── */
   useEffect(() => {
@@ -109,8 +114,17 @@ export default function AdminPage() {
 
   /* ───────── UI ───────── */
   return (
+
     <div style={{ padding: 20 }}>
-      <h1>Admin Dashboard</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>Admin Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          style={{ padding: '8px 16px', background: '#e3342f', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+        >
+          Log out
+        </button>
+      </div>
 
       {/* вкладки */}
       <div style={{ marginBottom: 10 }}>

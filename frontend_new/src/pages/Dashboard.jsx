@@ -42,7 +42,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-3xl mx-auto px-6">
       <h1 className="text-xl md:text-2xl font-bold mb-6 text-white">
-        Мої подорожі
+        My trips
       </h1>
 
       <TripsListPage

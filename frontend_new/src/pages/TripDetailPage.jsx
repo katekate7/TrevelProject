@@ -40,9 +40,8 @@ export default function TripDetailPage() {
 
       {trip.weather && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow w-fit">
-          <h3 className="text-xl font-semibold mb-2">Погода</h3>
+          <h3 className="text-xl font-semibold mb-2">Weather</h3>
           <p>Температура: {trip.weather.temperature}°C</p>
-          <p>Вологість: {trip.weather.humidity}%</p>
           <p>Опис: {trip.weather.weatherDescription}</p>
         </div>
       )}

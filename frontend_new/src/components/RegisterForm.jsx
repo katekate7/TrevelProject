@@ -57,7 +57,7 @@ export default function RegisterForm({ onNeedLogin }) {
       {/* Password */}
       <input
         type="password"
-        placeholder="Пароль"
+        placeholder="Password"
         required
         value={password}
         onChange={e => setPassword(e.target.value)}
@@ -77,18 +77,18 @@ export default function RegisterForm({ onNeedLogin }) {
           transition hover:bg-opacity-90
         "
       >
-        Зареєструватися
+        Register
       </button>
 
       {/* Error message */}
       {message && (
-        <p className="text-center text-sm text-red-600">{message}</p>
+        <p className="text-center text-sm text-red-600">{message.replace('Помилка реєстрації', 'Registration error')}</p>
       )}
 
       {/* Links (same style as login) */}
       <div className="mt-6 flex flex-col sm:flex-row sm:justify-between text-sm text-black">
         <span>
-          Уже маєте акаунт?{' '}
+          Already have an account?{' '}
           <button
             type="button"
             onClick={onNeedLogin}
@@ -98,7 +98,7 @@ export default function RegisterForm({ onNeedLogin }) {
               focus:outline-none
             "
           >
-            Увійти
+            Log in
           </button>
         </span>
       </div>

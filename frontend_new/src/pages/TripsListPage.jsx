@@ -146,7 +146,7 @@ export default function TripsListPage({
         onClick={onAddTrip}
         className="mt-8 px-6 py-3 bg-black text-white rounded-lg hover:bg-indigo-600"
       >
-        Нова подорож
+        New trip
       </button>
     </div>
   );

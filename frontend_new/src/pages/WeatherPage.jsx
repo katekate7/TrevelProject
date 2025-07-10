@@ -36,7 +36,7 @@ export default function WeatherPage() {
   if (!Array.isArray(forecast) || forecast.length === 0) {
     return (
       <div className="p-4">
-        <p className="text-gray-600">Прогноз наразі недоступний. Спробуйте оновити пізніше.</p>
+        <p className="text-gray-600">The forecast is currently unavailable. Please try refreshing later.</p>
         <button
           onClick={updateForecast}
           disabled={updating}
