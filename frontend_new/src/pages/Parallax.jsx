@@ -45,10 +45,10 @@ export default function Parallax() {
         }
       );
 
-      // Floating animation for clouds
+      // Floating animation for planes
       gsap.to(cloudsRef.current, {
-        y: -20,
-        duration: 3,
+        y: -15,
+        duration: 4,
         ease: "power2.inOut",
         yoyo: true,
         repeat: -1
@@ -69,12 +69,12 @@ export default function Parallax() {
         {/* Animated Background Elements */}
         <div 
           ref={cloudsRef}
-          className="clouds-layer"
+          className="planes-layer"
           style={{ transform: `translateY(${scrollY * 0.3}px)` }}
         >
-          <div className="cloud cloud-1"></div>
-          <div className="cloud cloud-2"></div>
-          <div className="cloud cloud-3"></div>
+          <div className="plane-bg plane-1">✈️</div>
+          <div className="plane-bg plane-2">🛩️</div>
+          <div className="plane-bg plane-3">✈️</div>
         </div>
 
         <div 
@@ -247,7 +247,7 @@ export default function Parallax() {
           overflow: hidden;
         }
 
-        .clouds-layer {
+        .planes-layer {
           position: absolute;
           top: 0;
           left: 0;
@@ -256,40 +256,37 @@ export default function Parallax() {
           pointer-events: none;
         }
 
-        .cloud {
+        .plane-bg {
           position: absolute;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 50px;
-          opacity: 0.6;
+          font-size: 2rem;
+          opacity: 0.7;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
-        .cloud-1 {
-          width: 100px;
-          height: 40px;
+        .plane-1 {
           top: 20%;
           left: 10%;
-          animation: float 20s infinite linear;
+          animation: flyAcross 25s infinite linear;
+          transform: rotate(-10deg);
         }
 
-        .cloud-2 {
-          width: 80px;
-          height: 30px;
-          top: 30%;
+        .plane-2 {
+          top: 35%;
           right: 20%;
-          animation: float 25s infinite linear reverse;
+          animation: flyAcross 30s infinite linear reverse;
+          transform: rotate(15deg);
         }
 
-        .cloud-3 {
-          width: 120px;
-          height: 50px;
-          top: 40%;
+        .plane-3 {
+          top: 60%;
           left: 70%;
-          animation: float 30s infinite linear;
+          animation: flyAcross 35s infinite linear;
+          transform: rotate(-5deg);
         }
 
-        @keyframes float {
-          from { transform: translateX(-100px); }
-          to { transform: translateX(100vw); }
+        @keyframes flyAcross {
+          from { transform: translateX(-150px) rotate(var(--rotation, 0deg)); }
+          to { transform: translateX(calc(100vw + 150px)) rotate(var(--rotation, 0deg)); }
         }
 
         .mountain-layer {
