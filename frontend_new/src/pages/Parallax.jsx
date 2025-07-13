@@ -54,6 +54,32 @@ export default function Parallax() {
         repeat: -1
       });
 
+      // Additional hero animations for travel vibes
+      gsap.fromTo(".travel-item",
+        { scale: 0, rotation: -180, opacity: 0 },
+        {
+          scale: 1,
+          rotation: 0,
+          opacity: 0.7,
+          duration: 1.5,
+          stagger: 0.3,
+          ease: "back.out(1.7)",
+          delay: 1
+        }
+      );
+
+      // Continuous gentle movement for planes
+      gsap.to(".plane-bg", {
+        y: "+=20",
+        x: "+=10",
+        rotation: "+=5",
+        duration: 3,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.5
+      });
+
     });
 
     return () => {
@@ -75,6 +101,14 @@ export default function Parallax() {
           <div className="plane-bg plane-1">✈️</div>
           <div className="plane-bg plane-2">🛩️</div>
           <div className="plane-bg plane-3">✈️</div>
+          <div className="travel-item passport-1">📔</div>
+          <div className="travel-item notebook-1">📓</div>
+          <div className="travel-item luggage-1">🧳</div>
+          <div className="travel-item passport-2">📘</div>
+          <div className="travel-item luggage-2">🎒</div>
+          <div className="travel-item notebook-2">📝</div>
+          <div className="travel-item camera-1">📷</div>
+          <div className="travel-item ticket-1">🎫</div>
         </div>
 
         <div 
@@ -258,9 +292,18 @@ export default function Parallax() {
 
         .plane-bg {
           position: absolute;
-          font-size: 2rem;
+          font-size: 3.5rem;
+          opacity: 0.8;
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+          z-index: 5;
+        }
+
+        .travel-item {
+          position: absolute;
+          font-size: 2.5rem;
           opacity: 0.7;
           filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+          z-index: 4;
         }
 
         .plane-1 {
@@ -284,9 +327,131 @@ export default function Parallax() {
           transform: rotate(-5deg);
         }
 
+        /* Travel Items Positioning and Animations */
+        .passport-1 {
+          top: 15%;
+          left: 25%;
+          animation: floatSlow 8s ease-in-out infinite, rotateGently 12s linear infinite;
+          animation-delay: 1s;
+        }
+
+        .notebook-1 {
+          top: 45%;
+          left: 5%;
+          animation: bounceFloat 6s ease-in-out infinite, wiggle 4s ease-in-out infinite;
+          animation-delay: 2s;
+        }
+
+        .luggage-1 {
+          top: 70%;
+          right: 15%;
+          animation: slideAcross 20s linear infinite, bobUp 3s ease-in-out infinite;
+          animation-delay: 0.5s;
+        }
+
+        .passport-2 {
+          top: 25%;
+          right: 35%;
+          animation: floatSlow 10s ease-in-out infinite reverse, rotateGently 15s linear infinite reverse;
+          animation-delay: 3s;
+        }
+
+        .luggage-2 {
+          top: 55%;
+          left: 85%;
+          animation: slideAcross 25s linear infinite reverse, bobUp 4s ease-in-out infinite;
+          animation-delay: 1.5s;
+        }
+
+        .notebook-2 {
+          top: 80%;
+          left: 30%;
+          animation: bounceFloat 7s ease-in-out infinite, wiggle 5s ease-in-out infinite reverse;
+          animation-delay: 4s;
+        }
+
+        .camera-1 {
+          top: 40%;
+          right: 5%;
+          animation: flashFloat 9s ease-in-out infinite, rotateGently 8s linear infinite;
+          animation-delay: 2.5s;
+        }
+
+        .ticket-1 {
+          top: 85%;
+          right: 40%;
+          animation: ticketDrift 15s ease-in-out infinite, flutter 3s ease-in-out infinite;
+          animation-delay: 1.8s;
+        }
+
         @keyframes flyAcross {
           from { transform: translateX(-150px) rotate(var(--rotation, 0deg)); }
           to { transform: translateX(calc(100vw + 150px)) rotate(var(--rotation, 0deg)); }
+        }
+
+        @keyframes floatSlow {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-25px) rotate(5deg); }
+          50% { transform: translateY(-15px) rotate(0deg); }
+          75% { transform: translateY(-35px) rotate(-5deg); }
+        }
+
+        @keyframes bounceFloat {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          25% { transform: translateY(-20px) scale(1.1); }
+          50% { transform: translateY(-10px) scale(0.95); }
+          75% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        @keyframes slideAcross {
+          0% { transform: translateX(-100px); }
+          50% { transform: translateX(50px); }
+          100% { transform: translateX(-100px); }
+        }
+
+        @keyframes bobUp {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rotateGently {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(3deg); }
+          75% { transform: rotate(-3deg); }
+        }
+
+        @keyframes flashFloat {
+          0%, 100% { 
+            transform: translateY(0px) scale(1);
+            opacity: 0.7;
+          }
+          30% { 
+            transform: translateY(-20px) scale(1.2);
+            opacity: 0.9;
+          }
+          60% { 
+            transform: translateY(-10px) scale(0.9);
+            opacity: 0.8;
+          }
+        }
+
+        @keyframes ticketDrift {
+          0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+          25% { transform: translateX(30px) translateY(-15px) rotate(5deg); }
+          50% { transform: translateX(-20px) translateY(-25px) rotate(-3deg); }
+          75% { transform: translateX(15px) translateY(-10px) rotate(2deg); }
+        }
+
+        @keyframes flutter {
+          0%, 100% { transform: skewX(0deg); }
+          25% { transform: skewX(2deg); }
+          50% { transform: skewX(0deg); }
+          75% { transform: skewX(-2deg); }
         }
 
         .mountain-layer {
@@ -827,6 +992,25 @@ export default function Parallax() {
           /* Disable animations on mobile */
           .floating-card {
             animation: none !important;
+          }
+
+          .plane-bg {
+            animation: none !important;
+            font-size: 2rem !important;
+          }
+
+          .travel-item {
+            animation: none !important;
+            font-size: 1.5rem !important;
+            position: static !important;
+            display: inline-block !important;
+            margin: 0.5rem !important;
+          }
+
+          .planes-layer {
+            text-align: center !important;
+            padding: 2rem 0 !important;
+            position: static !important;
           }
 
           .plane {
