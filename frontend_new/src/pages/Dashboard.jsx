@@ -40,7 +40,7 @@ export default function Dashboard() {
     return <FirstTripPage onTripCreated={id => navigate(`/trip/${id}`)} />;
 
   return (
-    <div className="max-w-3xl mx-auto px-6">
+    <div className="max-w-3xl mx-auto px-6 pt-8">
       <h1 className="text-xl md:text-2xl font-bold mb-6 text-white">
         My trips
       </h1>

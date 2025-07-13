@@ -129,7 +129,7 @@ export default function FirstTripPage() {
         {/* submit */}
         <button
           type="submit"
-          className="w-full md:w-auto mt-8 px-8 py-3 bg-black text-white text-lg font-semibold rounded-lg hover:bg-indigo-600 transition"
+          className="w-full md:w-auto mt-8 px-8 py-3 bg-[#FF9091] text-white text-lg font-semibold rounded-lg hover:bg-[#e6818c] transition"
         >
           Start a new trip !
         </button>

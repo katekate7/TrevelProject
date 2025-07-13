@@ -94,7 +94,7 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
       )}
 
       {/* Links (без чорного фону) */}
-      <div className="mt-6 flex flex-col text-sm text-black">
+      <div className=" flex flex-col text-sm text-black">
         <span className="flex flex-row">
           Don’t have an account?{' '}
           <button

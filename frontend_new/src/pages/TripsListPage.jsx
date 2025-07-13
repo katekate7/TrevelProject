@@ -77,7 +77,7 @@ export default function TripsListPage({
                 <div className="flex gap-4">
                   <button
                     onClick={() => beginEdit(trip)}
-                    className="text-indigo-400 hover:text-indigo-200"
+                    className="text-[#FF9091] hover:text-[#e6818c]"
                     title="Редагувати дати"
                   >
                     ✏️
@@ -123,7 +123,7 @@ export default function TripsListPage({
                   <button
                     onClick={() => save(trip.id)}
                     disabled={busy}
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                    className="px-4 py-2 bg-[#FF9091] text-white rounded hover:bg-[#e6818c] disabled:opacity-50"
                   >
                     {busy ? 'Збереження…' : 'Зберегти'}
                   </button>
@@ -144,7 +144,7 @@ export default function TripsListPage({
       {/* -------- NEW TRIP BUTTON -------- */}
       <button
         onClick={onAddTrip}
-        className="mt-8 px-6 py-3 bg-black text-white rounded-lg hover:bg-indigo-600"
+        className="mt-8 px-6 py-3 bg-[#FF9091] text-white rounded-lg hover:bg-[#e6818c]"
       >
         New trip
       </button>
