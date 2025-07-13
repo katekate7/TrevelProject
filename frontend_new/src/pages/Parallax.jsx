@@ -135,8 +135,8 @@ export default function Parallax() {
             Travel<span className="gradient-text">Planner</span>
           </h1>
           <p ref={subtitleRef} className="hero-subtitle">
-            Plan your perfect journey with AI-powered recommendations, 
-            route optimization, and seamless travel management
+            Plan your perfect journey with smart route optimization, 
+            curated attractions, and seamless travel management
           </p>
           <button 
             ref={ctaRef}
@@ -163,7 +163,7 @@ export default function Parallax() {
             <div className="feature-card">
               <div className="feature-icon">🗺️</div>
               <h3>Smart Route Planning</h3>
-              <p>AI-powered route optimization that finds the best paths between your destinations with multiple transport options.</p>
+              <p>Smart route optimization that finds the best paths between your destinations with multiple transport options.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">🏛️</div>
