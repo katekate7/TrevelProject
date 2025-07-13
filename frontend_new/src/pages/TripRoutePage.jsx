@@ -22,7 +22,6 @@ export default function TripRoutePage() {
   const [mode,       setMode]       = useState('foot-walking');
   const [loading,    setLoading]    = useState(true);
 
-  /* 1️⃣  Завантажуємо збережені пам’ятки */
   useEffect(() => {
     (async () => {
       try {
@@ -36,32 +35,36 @@ export default function TripRoutePage() {
     })();
   }, [id]);
 
-  /* 2️⃣  Будуємо маршрут коли є waypoints або міняється mode */
   useEffect(() => {
     if (!waypoints.length) return;
     let canceled = false;
     setLoading(true);
 
     (async () => {
-      const ors    = new openrouteservice.Directions({
+      const ors = new openrouteservice.Directions({
         api_key: import.meta.env.VITE_ORS_API_KEY,
       });
+
       const coords = waypoints.map(w => [w.lng, w.lat]);
-      const base   = { coordinates: coords, profile: mode, format: 'geojson' };
 
-      const tryCalc = p => ors.calculate(p)
-        .then(r => r.features[0].geometry.coordinates
-                        .map(([lng, lat]) => [lat, lng]));
+      try {
+        const res = await ors.calculate({
+          coordinates: coords,
+          profile: mode,
+          format: 'geojson',
+        });
 
-      let line = null;
-      try { line = await tryCalc(base); }
-      catch {
-        try { line = await tryCalc(base); } catch {}
-      }
+        const line = res.features[0].geometry.coordinates.map(
+          ([lng, lat]) => [lat, lng]
+        );
 
-      if (!canceled) {
-        if (line) setCoordinates(line);
-        setLoading(false);
+        if (!canceled) {
+          setCoordinates(line);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Route calculation failed:', error.response?.data || error.message);
+        if (!canceled) setLoading(false);
       }
     })();
 
@@ -78,7 +81,6 @@ export default function TripRoutePage() {
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Маршрут поїздки</h1>
 
-      {/* transport buttons */}
       <div className="flex gap-2">
         {MODES.map(m => (
           <button
@@ -94,14 +96,13 @@ export default function TripRoutePage() {
         ))}
       </div>
 
-      {/* map */}
-      <MapContainer center={center} zoom={13} style={{height:'60vh'}}>
+      <MapContainer center={center} zoom={13} style={{ height: '60vh' }}>
         <TileLayer
           attribution="&copy; OpenStreetMap"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Polyline positions={coordinates} />
-        {waypoints.map((wp,i) => (
+        {waypoints.map((wp, i) => (
           <Marker key={i} position={[wp.lat, wp.lng]}>
             <Popup>{wp.title}</Popup>
           </Marker>
