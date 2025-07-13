@@ -277,7 +277,7 @@ export default function Parallax() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #7FD1F6 0%, #6C72D1 50%, #282A54 100%);
           overflow: hidden;
         }
 
@@ -497,7 +497,7 @@ export default function Parallax() {
         }
 
         .gradient-text {
-          background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+          background: linear-gradient(45deg, #ff6b6b, #FF9091, #48dbfb, #ff9ff3);
           background-size: 400% 400%;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -523,18 +523,18 @@ export default function Parallax() {
           padding: 1rem 2rem;
           font-size: 1.2rem;
           font-weight: 600;
-          background: linear-gradient(45deg, #ff6b6b, #feca57);
+          background: linear-gradient(45deg, #FF9091, #ff6b6b);
           color: white;
           border: none;
           border-radius: 50px;
           cursor: pointer;
           transition: all 0.3s ease;
-          box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+          box-shadow: 0 10px 30px rgba(255, 144, 145, 0.3);
         }
 
         .cta-button:hover {
           transform: translateY(-3px);
-          box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+          box-shadow: 0 15px 40px rgba(255, 144, 145, 0.4);
         }
 
         .cta-button.secondary {
@@ -634,7 +634,7 @@ export default function Parallax() {
 
         .about-section {
           padding: 100px 0;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #6C72D1 0%, #282A54 100%);
           color: white;
           position: relative;
           overflow: hidden;
