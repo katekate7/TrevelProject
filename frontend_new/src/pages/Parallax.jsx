@@ -29,22 +29,6 @@ export default function Parallax() {
 
     // GSAP Animations
     const ctx = gsap.context(() => {
-      // Hero animation on load
-      gsap.fromTo(titleRef.current, 
-        { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }
-      );
-
-      gsap.fromTo(subtitleRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, delay: 0.3, ease: "power3.out" }
-      );
-
-      gsap.fromTo(ctaRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, delay: 0.6, ease: "power3.out" }
-      );
-
       // Features section animation
       gsap.fromTo(".feature-card",
         { y: 100, opacity: 0 },
@@ -61,20 +45,6 @@ export default function Parallax() {
         }
       );
 
-      // About section animation
-      gsap.fromTo(".about-text",
-        { x: -100, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 1.2,
-          scrollTrigger: {
-            trigger: aboutRef.current,
-            start: "top 70%",
-          }
-        }
-      );
-
       // Floating animation for clouds
       gsap.to(cloudsRef.current, {
         y: -20,
@@ -82,16 +52,6 @@ export default function Parallax() {
         ease: "power2.inOut",
         yoyo: true,
         repeat: -1
-      });
-
-      // Twinkling stars
-      gsap.to(".star", {
-        opacity: 0.3,
-        duration: 2,
-        ease: "power2.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: 0.5
       });
 
     });
@@ -107,24 +67,6 @@ export default function Parallax() {
       {/* Hero Section with Parallax */}
       <section ref={heroRef} className="hero-section">
         {/* Animated Background Elements */}
-        <div 
-          ref={starsRef}
-          className="stars-layer"
-          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
-        >
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="star"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`
-              }}
-            />
-          ))}
-        </div>
-
         <div 
           ref={cloudsRef}
           className="clouds-layer"
@@ -223,43 +165,53 @@ export default function Parallax() {
         <div className="container">
           <div className="about-content">
             <div className="about-text">
-              <h2>The Future of Travel Planning</h2>
+              <h2>✨ Travel Made Simple ✨</h2>
               <p>
-                TravelPlanner revolutionizes how you plan and experience your journeys. 
-                Built with modern web technologies including React, Symfony, and powered by 
-                OpenRouteService API, our platform combines the best of technology with 
-                the joy of travel discovery.
+                TravelPlanner transforms your wanderlust into extraordinary adventures. 
+                Our elegant platform is designed for the modern traveler who values 
+                sophistication, style, and seamless experiences.
               </p>
               <p>
-                From initial planning to real-time navigation, we handle every aspect 
-                of your trip so you can focus on what matters most - creating unforgettable memories.
+                From dreaming to discovering, we curate every moment of your journey 
+                so you can focus on what matters most - creating magical memories 
+                and living your best life.
               </p>
-              <div className="tech-stack">
-                <span className="tech-badge">React</span>
-                <span className="tech-badge">Symfony</span>
-                <span className="tech-badge">MySQL</span>
-                <span className="tech-badge">OpenRouteService</span>
-                <span className="tech-badge">Leaflet Maps</span>
+              <div className="luxury-features">
+                <span className="luxury-badge">💎 Premium Experience</span>
+                <span className="luxury-badge">🌸 Beautiful Interface</span>
+                <span className="luxury-badge">✨ Magical Planning</span>
+                <span className="luxury-badge">💕 Made with Love</span>
               </div>
             </div>
             <div className="about-visual">
+              <div className="plane-animation">
+                <div className="plane">✈️</div>
+                <div className="plane-trail"></div>
+              </div>
               <div className="floating-card card-1">
                 <div className="card-content">
-                  <h4>🎯 Plan</h4>
-                  <p>Choose destination & dates</p>
+                  <h4>💖 Dream</h4>
+                  <p>Imagine your perfect getaway</p>
                 </div>
               </div>
               <div className="floating-card card-2">
                 <div className="card-content">
-                  <h4>🗺️ Explore</h4>
-                  <p>Discover attractions & routes</p>
+                  <h4>🌟 Plan</h4>
+                  <p>Craft your luxury itinerary</p>
                 </div>
               </div>
               <div className="floating-card card-3">
                 <div className="card-content">
-                  <h4>✈️ Travel</h4>
-                  <p>Navigate with confidence</p>
+                  <h4>💫 Experience</h4>
+                  <p>Live your magical journey</p>
                 </div>
+              </div>
+              <div className="sparkles">
+                <div className="sparkle sparkle-1">✨</div>
+                <div className="sparkle sparkle-2">💫</div>
+                <div className="sparkle sparkle-3">⭐</div>
+                <div className="sparkle sparkle-4">✨</div>
+                <div className="sparkle sparkle-5">💫</div>
               </div>
             </div>
           </div>
@@ -293,29 +245,6 @@ export default function Parallax() {
           justify-content: center;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           overflow: hidden;
-        }
-
-        .stars-layer {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 120%;
-          pointer-events: none;
-        }
-
-        .star {
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background: white;
-          border-radius: 50%;
-          animation: twinkle 3s infinite ease-in-out;
-        }
-
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.2); }
         }
 
         .clouds-layer {
@@ -543,8 +472,27 @@ export default function Parallax() {
 
         .about-section {
           padding: 100px 0;
-          background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .about-section::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sparkle" patternUnits="userSpaceOnUse" width="20" height="20"><circle cx="5" cy="5" r="1" fill="%23ffffff" opacity="0.3"/><circle cx="15" cy="15" r="0.5" fill="%23ffffff" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23sparkle)"/></svg>');
+          opacity: 0.1;
+          animation: backgroundShimmer 10s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShimmer {
+          0%, 100% { opacity: 0.1; transform: translateX(0); }
+          50% { opacity: 0.2; transform: translateX(20px); }
         }
 
         .about-content {
@@ -552,67 +500,284 @@ export default function Parallax() {
           grid-template-columns: 1fr 1fr;
           gap: 4rem;
           align-items: center;
+          position: relative;
+          z-index: 2;
         }
 
         .about-text h2 {
           font-size: 2.5rem;
           font-weight: 700;
           margin-bottom: 2rem;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .about-text p {
           font-size: 1.1rem;
           line-height: 1.8;
           margin-bottom: 1.5rem;
-          opacity: 0.9;
+          opacity: 0.95;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .tech-stack {
+        .luxury-features {
           display: flex;
           flex-wrap: wrap;
           gap: 1rem;
           margin-top: 2rem;
         }
 
-        .tech-badge {
-          padding: 0.5rem 1rem;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 25px;
+        .luxury-badge {
+          padding: 0.7rem 1.2rem;
+          background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+          border-radius: 30px;
           font-size: 0.9rem;
           font-weight: 500;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.2);
+          box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
         .about-visual {
           position: relative;
-          height: 400px;
+          height: 500px;
+        }
+
+        .plane-animation {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          height: 100%;
+        }
+
+        .plane {
+          position: absolute;
+          font-size: 3rem;
+          animation: flyAround 12s ease-in-out infinite;
+          z-index: 10;
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .plane-trail {
+          position: absolute;
+          width: 120px;
+          height: 3px;
+          background: linear-gradient(90deg, 
+            rgba(255,255,255,0.9) 0%, 
+            rgba(255,192,203,0.7) 30%,
+            rgba(138,43,226,0.5) 70%,
+            transparent 100%);
+          border-radius: 3px;
+          animation: trailFollow 12s ease-in-out infinite;
+          box-shadow: 0 0 15px rgba(255,192,203,0.6);
+        }
+
+        @keyframes flyAround {
+          0% { 
+            top: 20%; 
+            left: 10%; 
+            transform: rotate(-15deg) scale(1);
+          }
+          15% { 
+            top: 15%; 
+            left: 30%; 
+            transform: rotate(0deg) scale(1.1);
+          }
+          30% { 
+            top: 30%; 
+            left: 80%; 
+            transform: rotate(25deg) scale(1);
+          }
+          45% { 
+            top: 60%; 
+            left: 85%; 
+            transform: rotate(45deg) scale(0.9);
+          }
+          60% { 
+            top: 80%; 
+            left: 60%; 
+            transform: rotate(180deg) scale(1.1);
+          }
+          75% { 
+            top: 70%; 
+            left: 15%; 
+            transform: rotate(-45deg) scale(1);
+          }
+          90% { 
+            top: 40%; 
+            left: 5%; 
+            transform: rotate(-30deg) scale(1.05);
+          }
+          100% { 
+            top: 20%; 
+            left: 10%; 
+            transform: rotate(-15deg) scale(1);
+          }
+        }
+
+        @keyframes trailFollow {
+          0% { 
+            top: 20%; 
+            left: 5%; 
+            transform: rotate(-15deg) scaleX(1);
+            opacity: 0.8;
+          }
+          15% { 
+            top: 15%; 
+            left: 25%; 
+            transform: rotate(0deg) scaleX(1.2);
+            opacity: 0.9;
+          }
+          30% { 
+            top: 30%; 
+            left: 75%; 
+            transform: rotate(25deg) scaleX(1);
+            opacity: 0.7;
+          }
+          45% { 
+            top: 60%; 
+            left: 80%; 
+            transform: rotate(45deg) scaleX(0.8);
+            opacity: 0.8;
+          }
+          60% { 
+            top: 80%; 
+            left: 55%; 
+            transform: rotate(180deg) scaleX(1.3);
+            opacity: 0.9;
+          }
+          75% { 
+            top: 70%; 
+            left: 10%; 
+            transform: rotate(-45deg) scaleX(1);
+            opacity: 0.6;
+          }
+          90% { 
+            top: 40%; 
+            left: 0%; 
+            transform: rotate(-30deg) scaleX(1.1);
+            opacity: 0.8;
+          }
+          100% { 
+            top: 20%; 
+            left: 5%; 
+            transform: rotate(-15deg) scaleX(1);
+            opacity: 0.8;
+          }
+        }
+
+        .sparkles {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .sparkle {
+          position: absolute;
+          font-size: 1.5rem;
+          animation: sparkleFloat 4s ease-in-out infinite;
+          opacity: 0.8;
+        }
+
+        .sparkle-1 {
+          top: 15%;
+          left: 20%;
+          animation-delay: 0s;
+          animation: sparkleFloat 3s ease-in-out infinite, sparkleRotate 2s linear infinite;
+        }
+
+        .sparkle-2 {
+          top: 25%;
+          right: 15%;
+          animation-delay: 1s;
+          animation: sparkleFloat 4s ease-in-out infinite, sparkleRotate 3s linear infinite reverse;
+        }
+
+        .sparkle-3 {
+          bottom: 30%;
+          left: 30%;
+          animation-delay: 2s;
+          animation: sparkleFloat 3.5s ease-in-out infinite, sparkleRotate 2.5s linear infinite;
+        }
+
+        .sparkle-4 {
+          bottom: 20%;
+          right: 25%;
+          animation-delay: 3s;
+          animation: sparkleFloat 4.5s ease-in-out infinite, sparkleRotate 2.2s linear infinite reverse;
+        }
+
+        .sparkle-5 {
+          top: 40%;
+          left: 60%;
+          animation-delay: 1.5s;
+          animation: sparkleFloat 3.8s ease-in-out infinite, sparkleRotate 2.8s linear infinite;
+        }
+
+        @keyframes sparkleFloat {
+          0%, 100% { 
+            transform: translateY(0px) scale(1);
+            opacity: 0.8;
+          }
+          33% { 
+            transform: translateY(-25px) scale(1.3);
+            opacity: 1;
+          }
+          66% { 
+            transform: translateY(-10px) scale(0.9);
+            opacity: 0.9;
+          }
+        }
+
+        @keyframes sparkleRotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
 
         .floating-card {
           position: absolute;
-          background: white;
-          color: #2c3e50;
-          padding: 1.5rem;
-          border-radius: 15px;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-          animation: floatCard 6s ease-in-out infinite;
+          background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+          color: #333;
+          padding: 1.8rem;
+          border-radius: 20px;
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+          animation: floatCard 6s ease-in-out infinite, cardGlow 4s ease-in-out infinite;
+          backdrop-filter: blur(15px);
+          border: 1px solid rgba(255,255,255,0.3);
         }
 
         .card-1 {
-          top: 20%;
-          left: 0;
+          top: 15%;
+          left: -5%;
           animation-delay: 0s;
+          background: linear-gradient(135deg, rgba(255,182,193,0.95), rgba(255,182,193,0.85));
         }
 
         .card-2 {
-          top: 50%;
-          right: 0;
+          top: 45%;
+          right: -5%;
           animation-delay: 2s;
+          background: linear-gradient(135deg, rgba(255,218,224,0.95), rgba(255,218,224,0.85));
         }
 
         .card-3 {
-          bottom: 20%;
-          left: 30%;
+          bottom: 15%;
+          left: 25%;
           animation-delay: 4s;
+          background: linear-gradient(135deg, rgba(255,240,245,0.95), rgba(255,240,245,0.85));
+        }
+
+        @keyframes cardGlow {
+          0%, 100% { 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+          }
+          50% { 
+            box-shadow: 0 20px 40px rgba(138,43,226, 0.25), 0 0 30px rgba(255,192,203, 0.3);
+          }
         }
 
         @keyframes floatCard {
@@ -660,6 +825,39 @@ export default function Parallax() {
           
           .section-title {
             font-size: 2rem;
+          }
+
+          /* Disable animations on mobile */
+          .floating-card {
+            animation: none !important;
+          }
+
+          .plane {
+            animation: none !important;
+            position: static !important;
+            display: block !important;
+            text-align: center !important;
+            margin: 2rem auto !important;
+          }
+
+          .plane-trail {
+            display: none !important;
+          }
+
+          .sparkle {
+            animation: none !important;
+          }
+
+          .about-visual {
+            height: auto !important;
+            text-align: center !important;
+          }
+
+          .card-1, .card-2, .card-3 {
+            position: static !important;
+            margin: 1rem auto !important;
+            display: block !important;
+            max-width: 300px !important;
           }
         }
       `}</style>

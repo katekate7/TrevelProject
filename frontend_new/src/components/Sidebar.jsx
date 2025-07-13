@@ -35,7 +35,6 @@ export default function Sidebar() {
           <h2 className="text-xl font-bold mb-4">Menu</h2>
           <ul className="space-y-2">
             <li><button onClick={() => { setOpen(false); navigate('/dashboard'); }}          className="block w-full text-left">Dashboard</button></li>
-            <li><button onClick={() => { setOpen(false); navigate(`/trip/${id}`); }}          className="block w-full text-left">Main</button></li>
             <li><button onClick={() => { setOpen(false); navigate(`/trip/${id}/weather`); }} className="block w-full text-left">Weather</button></li>
             <li><button onClick={() => { setOpen(false); navigate(`/trip/${id}/sightseeings`); }} className="block w-full text-left">Sightseeings</button></li>
             <li><button onClick={() => { setOpen(false); navigate(`/trip/${id}/route`); }}   className="block w-full text-left">Route</button></li>
