@@ -17,9 +17,9 @@ export default function CityPage() {
         const response = await fetch(
           `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`
         );
-        if (!response.ok) throw new Error('Не вдалося завантажити дані з Wikipedia');
+        if (!response.ok) throw new Error('Failed to download data from Wikipedia');
         const data = await response.json();
-        setSummary(data.extract || 'Інформація недоступна');
+        setSummary(data.extract || 'Information is not available');
         if (data.thumbnail?.source) setImageUrl(data.thumbnail.source);
       } catch (err) {
         setError(err.message);
@@ -45,7 +45,7 @@ export default function CityPage() {
       <main className="flex-1 p-6 overflow-auto">
         <h1 className="text-3xl font-bold mb-4">{city}, {country}</h1>
 
-        {loading && <p>Завантаження...</p>}
+        {loading && <p>Download...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
         {!loading && !error && (

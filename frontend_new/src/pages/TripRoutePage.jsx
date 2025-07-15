@@ -88,7 +88,7 @@ export default function TripRoutePage() {
         }
       `}</style>
       <div className="p-6 pt-12 md:pt-6 space-y-4">
-        <h1 className="text-2xl font-bold">The route of the trip</h1>
+        <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>The route of the trip</h1>
 
         <div className="flex gap-2">
         {MODES.map(m => (

@@ -126,15 +126,15 @@ export default function SightseeingsPage() {
     navigate(`/trip/${id}/route`);
   };
 
-  if (phase === 'loading')        return <p className="p-6">Завантаження…</p>;
-  if (phase === 'loadingWiki')    return <p className="p-6">Завантаження пам’яток…</p>;
-  if (phase === 'loadingSaved')   return <p className="p-6">Завантаження відміток…</p>;
-  if (phase === 'error')          return <p className="p-6 text-red-600">Сталася помилка</p>;
+  if (phase === 'loading')        return <p className="p-6">Download...</p>;
+  if (phase === 'loadingWiki')    return <p className="p-6">Downloading sights…</p>;
+  if (phase === 'loadingSaved')   return <p className="p-6">Downloading marks…</p>;
+  if (phase === 'error')          return <p className="p-6 text-red-600">An error occurred</p>;
 
   return (
     <div className="p-6 pt-12 md:pt-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">
-        Top 20 must-see у {trip.city}
+      <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>
+        Top 20 must-see in {trip.city}
       </h1>
       <ul className="space-y-6">
         {places.map(p=>(
@@ -153,7 +153,7 @@ export default function SightseeingsPage() {
               <h2 className="text-xl font-semibold mb-1 text-white">{p.title}</h2>
               <p className="text-white">{p.desc}</p>
               <p className="text-xs text-gray-400 mt-1">
-                👁 {p.views.toLocaleString()} views / 60 днів
+                👁 {p.views.toLocaleString()} views / 60 days
               </p>
             </div>
           </li>

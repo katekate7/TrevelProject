@@ -114,13 +114,54 @@ export default function AdminPage() {
 
   /* ───────── UI ───────── */
   return (
-
-    <div style={{ padding: 20 }}>
+    <>
+      <style>{`
+        table {
+          border-collapse: separate;
+          border-spacing: 0 8px;
+        }
+        tbody tr {
+          margin-bottom: 8px;
+        }
+        tbody tr td {
+          padding: 8px 12px;
+          border: 1px solid #dee2e6;
+        }
+        tbody tr td:first-child {
+          border-radius: 4px 0 0 4px;
+        }
+        tbody tr td:last-child {
+          border-radius: 0 4px 4px 0;
+        }
+        thead tr th {
+          padding: 8px 12px;
+          border: 1px solid #dee2e6;
+          font-weight: bold;
+        }
+        thead tr th:first-child {
+          border-radius: 4px 0 0 4px;
+        }
+        thead tr th:last-child {
+          border-radius: 0 4px 4px 0;
+        }
+        input, select {
+          width: 150px;
+          padding: 6px 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+        input[type="checkbox"] {
+          width: auto;
+          margin: 0;
+        }
+      `}</style>
+      <div style={{ padding: 20 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Admin Dashboard</h1>
+        <h1 style={{ fontFamily: 'Abril Fatface, cursive', fontSize: '2.5rem', fontWeight: 'bold' }}>Admin Dashboard</h1>
         <button
           onClick={handleLogout}
-          style={{ padding: '8px 16px', background: '#e3342f', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+          style={{ padding: '8px 16px', background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
         >
           Log out
         </button>
@@ -285,5 +326,6 @@ export default function AdminPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

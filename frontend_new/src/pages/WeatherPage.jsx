@@ -31,7 +31,7 @@ export default function WeatherPage() {
 
   useEffect(loadForecast, [id]);
 
-  if (loading) return <p>Завантаження погоди…</p>;
+  if (loading) return <p>Downloading the weather…</p>;
 
   if (!Array.isArray(forecast) || forecast.length === 0) {
     return (
@@ -42,7 +42,7 @@ export default function WeatherPage() {
           disabled={updating}
           className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
         >
-          {updating ? 'Оновлення…' : 'Спробувати оновити ще раз'}
+          {updating ? 'Update...' : 'Try to update again'}
         </button>
       </div>
     );
@@ -52,7 +52,7 @@ export default function WeatherPage() {
     <div className="flex h-screen">
       <main className="flex-1 p-6 pt-12 md:pt-6 overflow-auto">
 
-        <h2 className="text-2xl mb-2">Forecast</h2>
+        <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>Forecast</h2>
 
         <button
           onClick={updateForecast}

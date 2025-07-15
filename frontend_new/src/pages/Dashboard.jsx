@@ -35,7 +35,7 @@ export default function Dashboard() {
   };
 
   /* ── UI ─────────────────────────────────── */
-  if (loading)         return <p className="p-6">Завантаження…</p>;
+  if (loading)         return <p className="p-6">Download...</p>;
   if (trips.length===0)
     return <FirstTripPage onTripCreated={id => navigate(`/trip/${id}`)} />;
 

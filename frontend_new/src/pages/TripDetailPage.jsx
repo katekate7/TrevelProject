@@ -15,14 +15,14 @@ export default function TripDetailPage() {
        .finally(() => setLoad(false));
   }, [id]);
 
-  if (loading) return <p>Завантаження…</p>;
-  if (!trip)   return <p>Поїздка не знайдена</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!trip)   return <p>Trip not found</p>;
 
   /* ---------- контент сторінки ---------- */
   return (
     <div className="p-6 pt-12 md:pt-6 overflow-auto">
 
-      <h1 className="text-3xl font-bold mb-4 font-family: &quot;Abril Fatface&quot;, cursive;">
+      <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>
         {trip.city}, {trip.country}
       </h1>
 
@@ -41,8 +41,8 @@ export default function TripDetailPage() {
       {trip.weather && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow w-fit">
           <h3 className="text-xl font-semibold mb-2">Weather</h3>
-          <p>Температура: {trip.weather.temperature}°C</p>
-          <p>Опис: {trip.weather.weatherDescription}</p>
+          <p>Temperature: {trip.weather.temperature}°C</p>
+          <p>Description: {trip.weather.weatherDescription}</p>
         </div>
       )}
     </div>

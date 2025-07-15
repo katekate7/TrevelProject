@@ -48,7 +48,7 @@ export default function ItemsPage() {
 
   return (
     <div className="p-6 pt-12 md:pt-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4"> Things for packing</h1>
+      <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>Things for packing</h1>
 
       <ul className="space-y-2 list-disc pl-4">
         {items.map(it => (
@@ -71,7 +71,8 @@ export default function ItemsPage() {
 
 
       <button onClick={() => setShow(true)}
-              className="mt-6 px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">
+              className="mt-6 px-4 py-2 text-white rounded hover:bg-[#e6818c]"
+              style={{ backgroundColor: '#FF9091' }}>
         Offer a new item
       </button>
 
@@ -90,7 +91,8 @@ export default function ItemsPage() {
                       className="px-4 py-2 text-gray-600 hover:underline"
                       disabled={busy}>Cancel</button>
               <button onClick={sendReq}
-                      className="px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700"
+                      className="px-4 py-2 text-white rounded hover:bg-[#e6818c]"
+                      style={{ backgroundColor: '#FF9091' }}
                       disabled={busy}>{busy ? 'Sending...' : 'Send'}</button>
             </div>
           </div>
