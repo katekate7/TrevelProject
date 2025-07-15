@@ -11,7 +11,7 @@ export default function WeatherPage() {
   const [loading,  setLoading]  = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  // ── завантаження прогнозу ───────────────────────
+  // ── loading forecast ───────────────────────
   const loadForecast = () => {
     setLoading(true);
     api.get(`/trips/${id}/weather`)

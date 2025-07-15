@@ -126,6 +126,7 @@ export default function AdminPage() {
         tbody tr td {
           padding: 8px 12px;
           border: 1px solid #dee2e6;
+          color: black;
         }
         tbody tr td:first-child {
           border-radius: 4px 0 0 4px;
@@ -137,6 +138,7 @@ export default function AdminPage() {
           padding: 8px 12px;
           border: 1px solid #dee2e6;
           font-weight: bold;
+          color: black;
         }
         thead tr th:first-child {
           border-radius: 4px 0 0 4px;
@@ -145,7 +147,7 @@ export default function AdminPage() {
           border-radius: 0 4px 4px 0;
         }
         input, select {
-          width: 150px;
+          width: 250px;
           padding: 6px 8px;
           border: 1px solid #ccc;
           border-radius: 4px;
@@ -195,48 +197,9 @@ export default function AdminPage() {
       {/* ---------- USERS ---------- */}
       {tab === 'users' && (
         <>
-          <table>
-            <thead>
-              <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-              {users.map(u => (
-                <tr key={u.id}>
-                  <td>{u.id}</td>
-                  <td>
-                    <input value={u.username}
-                           onChange={e => setUsers(
-                             users.map(x => x.id === u.id ? { ...x, username: e.target.value } : x)
-                           )}/>
-                  </td>
-                  <td>
-                    <input type="email" value={u.email}
-                           onChange={e => setUsers(
-                             users.map(x => x.id === u.id ? { ...x, email: e.target.value } : x)
-                           )}/>
-                  </td>
-                  <td>
-                    <select value={u.role}
-                            onChange={e => setUsers(
-                              users.map(x => x.id === u.id ? { ...x, role: e.target.value } : x)
-                            )}>
-                      <option value="user">user</option>
-                      <option value="admin">admin</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button onClick={() => updateUser(u)}>Save</button>
-                    <button onClick={() => deleteUser(u.id)}>Del</button>
-                    <button onClick={() => resetPwd(u.id)}>Reset pwd</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* форма «новий» */}
-          <h2 style={{ marginTop: 25 }}>Create new user / admin</h2>
-          <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center' }}>
+          {/* форма «новий» - moved to top */}
+          <h2 style={{ marginTop: '25px', color: 'white', fontSize: '2rem', fontWeight: 'bold' }}>Create new user / admin</h2>
+          <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center', marginBottom: '30px' }}>
             <input placeholder="Username" value={newUser.username}
                    onChange={e => setNewUser({ ...newUser, username: e.target.value })}/>
             <input placeholder="Email" type="email" value={newUser.email}
@@ -248,7 +211,102 @@ export default function AdminPage() {
               <option value="user">user</option>
               <option value="admin">admin</option>
             </select>
-            <button onClick={createUser}>Add</button>
+            <button 
+              onClick={createUser}
+              style={{ 
+                padding: '8px 16px', 
+                background: '#FF9091', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: 4, 
+                cursor: 'pointer' 
+              }}
+            >
+              Add
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            {users.map(u => (
+              <div key={u.id} style={{ 
+                border: '1px solid #dee2e6', 
+                borderRadius: '8px', 
+                padding: '15px',
+                backgroundColor: '#f9f9f9'
+              }}>
+                {/* ID Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <span style={{ fontWeight: 'bold', color: 'black' }}>ID: {u.id}</span>
+                </div>
+                
+                {/* Username Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px', color: 'black' }}>Username:</label>
+                  <input value={u.username}
+                         onChange={e => setUsers(
+                           users.map(x => x.id === u.id ? { ...x, username: e.target.value } : x)
+                         )}/>
+                </div>
+                
+                {/* Email Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px', color: 'black' }}>Email:</label>
+                  <input type="email" value={u.email}
+                         onChange={e => setUsers(
+                           users.map(x => x.id === u.id ? { ...x, email: e.target.value } : x)
+                         )}/>
+                </div>
+                
+                {/* Role Row */}
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px', color: 'black' }}>Role:</label>
+                  <select value={u.role}
+                          onChange={e => setUsers(
+                            users.map(x => x.id === u.id ? { ...x, role: e.target.value } : x)
+                          )}>
+                    <option value="user">user</option>
+                    <option value="admin">admin</option>
+                  </select>
+                </div>
+                
+                {/* Fourth line: Actions */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button onClick={() => updateUser(u)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Save
+                  </button>
+                  <button onClick={() => deleteUser(u.id)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Delete
+                  </button>
+                  <button onClick={() => resetPwd(u.id)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Reset password
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}
@@ -256,17 +314,17 @@ export default function AdminPage() {
       {/* ---------- ITEMS ---------- */}
       {tab === 'items' && (
         <div>
-          <h2>New Item</h2>
+          <h2 style={{ color: 'black' }}>New Item</h2>
           <input placeholder="Name" value={newItem.name}
                  onChange={e => setNewItem({ ...newItem, name: e.target.value })}/>
-          <label style={{ marginLeft: 8 }}>
+          <label style={{ marginLeft: 8, color: 'black' }}>
             Important?
             <input type="checkbox" checked={newItem.important}
                    onChange={e => setNewItem({ ...newItem, important: e.target.checked })}/>
           </label>
-          <button onClick={addItem} style={{ marginLeft: 8 }}>Add</button>
+          <button onClick={addItem} style={{ marginLeft: 8, background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Add</button>
 
-          <h2 style={{ marginTop: 25 }}>All Items</h2>
+          <h2 style={{ marginTop: 25, color: 'black' }}>All Items</h2>
           <table>
             <thead><tr><th>#</th><th>Name</th><th>Important</th><th>Action</th></tr></thead>
             <tbody>
@@ -293,8 +351,8 @@ export default function AdminPage() {
                     />
                   </td>
                   <td>
-                    <button onClick={() => updateItem(it)}>Save</button>
-                    <button onClick={() => deleteItem(it.id)}>Del</button>
+                    <button onClick={() => updateItem(it)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Save</button>
+                    <button onClick={() => deleteItem(it.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Del</button>
                   </td>
                 </tr>
               ))}
@@ -306,7 +364,7 @@ export default function AdminPage() {
       {/* ---------- REQUESTS ---------- */}
       {tab === 'requests' && (
         <div>
-          <h2>Pending Item Requests</h2>
+          <h2 style={{ color: 'black' }}>Pending Item Requests</h2>
           <table>
             <thead><tr><th>#</th><th>Name</th><th>By</th><th>Action</th></tr></thead>
             <tbody>
@@ -316,8 +374,8 @@ export default function AdminPage() {
                   <td>{r.name}</td>
                   <td>{r.requestedBy}</td>
                   <td>
-                    <button onClick={() => approveReq(r.id)}>Approve</button>
-                    <button onClick={() => rejectReq(r.id)}>Reject</button>
+                    <button onClick={() => approveReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Approve</button>
+                    <button onClick={() => rejectReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Reject</button>
                   </td>
                 </tr>
               ))}
