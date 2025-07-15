@@ -50,16 +50,16 @@ export default function WeatherPage() {
 
   return (
     <div className="flex h-screen">
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-6 pt-12 md:pt-6 overflow-auto">
 
-        <h2 className="text-2xl mb-2">Прогноз погоди</h2>
+        <h2 className="text-2xl mb-2">Forecast</h2>
 
         <button
           onClick={updateForecast}
           disabled={updating}
           className="mb-6 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
         >
-          {updating ? 'Оновлення…' : 'Оновити прогноз'}
+          {updating ? 'Uptading...' : ' Update'}
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -68,7 +68,7 @@ export default function WeatherPage() {
             return (
               <div key={day.dt} className="p-4 border rounded-lg">
                 <h3 className="font-bold">{date}</h3>
-                <p>День: {day.temp.day}°C, Ніч: {day.temp.night}°C</p>
+                <p>Day: {day.temp.day}°C, Night: {day.temp.night}°C</p>
                 <p>{day.weather[0].description}</p>
                 <img
                   src={`http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}

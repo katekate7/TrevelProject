@@ -132,7 +132,7 @@ export default function SightseeingsPage() {
   if (phase === 'error')          return <p className="p-6 text-red-600">Сталася помилка</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 pt-12 md:pt-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">
         Top 20 must-see у {trip.city}
       </h1>
@@ -164,7 +164,7 @@ export default function SightseeingsPage() {
         disabled={selectedTitles.size===0}
         className="mt-8 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
       >
-        ➜ Побудувати маршрут
+        ➜ Build a route
       </button>
     </div>
   );

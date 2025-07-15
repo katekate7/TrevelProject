@@ -71,17 +71,26 @@ export default function TripRoutePage() {
     return () => { canceled = true; };
   }, [waypoints, mode]);
 
-  if (loading) return <p className="p-6">Завантаження маршруту…</p>;
+  if (loading) return <p className="p-6">Downloading the route…</p>;
   if (!waypoints.length)
-    return <p className="p-6 text-red-600">Маршрут не знайдено</p>;
+    return <p className="p-6 text-red-600">Route not found</p>;
 
   const center = [waypoints[0].lat, waypoints[0].lng];
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Маршрут поїздки</h1>
+    <>
+      <style>{`
+        .leaflet-container {
+          z-index: 1 !important;
+        }
+        .leaflet-control-container {
+          z-index: 1 !important;
+        }
+      `}</style>
+      <div className="p-6 pt-12 md:pt-6 space-y-4">
+        <h1 className="text-2xl font-bold">The route of the trip</h1>
 
-      <div className="flex gap-2">
+        <div className="flex gap-2">
         {MODES.map(m => (
           <button
             key={m.id}
@@ -96,18 +105,21 @@ export default function TripRoutePage() {
         ))}
       </div>
 
-      <MapContainer center={center} zoom={13} style={{ height: '60vh' }}>
-        <TileLayer
-          attribution="&copy; OpenStreetMap"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Polyline positions={coordinates} />
-        {waypoints.map((wp, i) => (
-          <Marker key={i} position={[wp.lat, wp.lng]}>
-            <Popup>{wp.title}</Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <MapContainer center={center} zoom={13} style={{ height: '60vh', zIndex: 1 }}>
+          <TileLayer
+            attribution="&copy; OpenStreetMap"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Polyline positions={coordinates} />
+          {waypoints.map((wp, i) => (
+            <Marker key={i} position={[wp.lat, wp.lng]}>
+              <Popup>{wp.title}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
     </div>
+    </>
   );
 }

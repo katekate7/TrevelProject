@@ -112,7 +112,7 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
           type="button"
           onClick={onForgotPassword}
           className="
-            bg-transparent p-0 m-0 mt-2 sm:mt-0
+            bg-transparent p-0 m-0 sm:mt-0
             font-semibold underline hover:text-[#d14b4c]
             focus:outline-none self-start"
         >

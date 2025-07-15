@@ -41,7 +41,14 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 pt-8">
-      <h1 className="text-xl md:text-2xl font-bold mb-6 text-white">
+      <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white" style={{ fontFamily: 'Abril Fatface, cursive', fontSize: '48px' }}>
+        <style>{`
+          @media (min-width: 768px) {
+            h1 {
+              font-size: 54px !important;
+            }
+          }
+        `}</style>
         My trips
       </h1>
 

@@ -20,9 +20,9 @@ export default function TripDetailPage() {
 
   /* ---------- контент сторінки ---------- */
   return (
-    <div className="p-6 overflow-auto">
+    <div className="p-6 pt-12 md:pt-6 overflow-auto">
 
-      <h1 className="text-3xl font-bold mb-4">
+      <h1 className="text-3xl font-bold mb-4 font-family: &quot;Abril Fatface&quot;, cursive;">
         {trip.city}, {trip.country}
       </h1>
 

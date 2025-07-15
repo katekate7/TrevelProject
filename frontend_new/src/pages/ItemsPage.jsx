@@ -47,8 +47,8 @@ export default function ItemsPage() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Речі для пакування</h1>
+    <div className="p-6 pt-12 md:pt-6 max-w-md mx-auto">
+      <h1 className="text-2xl font-bold mb-4"> Things for packing</h1>
 
       <ul className="space-y-2 list-disc pl-4">
         {items.map(it => (
@@ -72,15 +72,15 @@ export default function ItemsPage() {
 
       <button onClick={() => setShow(true)}
               className="mt-6 px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">
-        Запропонувати нову річ
+        Offer a new item
       </button>
 
       {showReq && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
-            <h2 className="text-xl font-semibold mb-4">Запропонувати нову річ</h2>
+            <h2 className="text-xl font-semibold mb-4">Offer a new item</h2>
             <input type="text"
-                   placeholder="Назва речі"
+                   placeholder="Name of the item"
                    className="w-full border px-3 py-2 rounded mb-4"
                    value={reqName}
                    onChange={e => setName(e.target.value)}
@@ -88,10 +88,10 @@ export default function ItemsPage() {
             <div className="flex justify-end gap-2">
               <button onClick={() => setShow(false)}
                       className="px-4 py-2 text-gray-600 hover:underline"
-                      disabled={busy}>Скасувати</button>
+                      disabled={busy}>Cancel</button>
               <button onClick={sendReq}
                       className="px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700"
-                      disabled={busy}>{busy ? 'Надсилання…' : 'Надіслати'}</button>
+                      disabled={busy}>{busy ? 'Sending...' : 'Send'}</button>
             </div>
           </div>
         </div>

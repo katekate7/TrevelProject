@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Parallax() {
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Refs for parallax elements
   const heroRef = useRef(null);
@@ -21,72 +22,84 @@ export default function Parallax() {
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
   const featuresRef = useRef(null);
-  const aboutRef = useRef(null);
-
-  useEffect(() => {
+  const aboutRef = useRef(null);  useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial checks
+    checkMobile();
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', checkMobile);
 
-    // GSAP Animations
-    const ctx = gsap.context(() => {
-      // Features section animation
-      gsap.fromTo(".feature-card",
-        { y: 100, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: featuresRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
+    let ctx;
+    
+    // GSAP Animations - only on desktop
+    if (!isMobile) {
+      ctx = gsap.context(() => {
+        // Features section animation
+        gsap.fromTo(".feature-card",
+          { y: 100, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            scrollTrigger: {
+              trigger: featuresRef.current,
+              start: "top 80%",
+              end: "bottom 20%",
+            }
           }
-        }
-      );
+        );
 
-      // Floating animation for planes
-      gsap.to(cloudsRef.current, {
-        y: -15,
-        duration: 4,
-        ease: "power2.inOut",
-        yoyo: true,
-        repeat: -1
+        // Floating animation for planes
+        gsap.to(cloudsRef.current, {
+          y: -15,
+          duration: 4,
+          ease: "power2.inOut",
+          yoyo: true,
+          repeat: -1
+        });
+
+        // Additional hero animations for travel vibes
+        gsap.fromTo(".travel-item",
+          { scale: 0, rotation: -180, opacity: 0 },
+          {
+            scale: 1,
+            rotation: 0,
+            opacity: 0.7,
+            duration: 1.5,
+            stagger: 0.3,
+            ease: "back.out(1.7)",
+            delay: 1
+          }
+        );
+
+        // Continuous gentle movement for planes
+        gsap.to(".plane-bg", {
+          y: "+=20",
+          x: "+=10",
+          rotation: "+=5",
+          duration: 3,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          stagger: 0.5
+        });
+
       });
-
-      // Additional hero animations for travel vibes
-      gsap.fromTo(".travel-item",
-        { scale: 0, rotation: -180, opacity: 0 },
-        {
-          scale: 1,
-          rotation: 0,
-          opacity: 0.7,
-          duration: 1.5,
-          stagger: 0.3,
-          ease: "back.out(1.7)",
-          delay: 1
-        }
-      );
-
-      // Continuous gentle movement for planes
-      gsap.to(".plane-bg", {
-        y: "+=20",
-        x: "+=10",
-        rotation: "+=5",
-        duration: 3,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: 0.5
-      });
-
-    });
+    }
 
     return () => {
-      ctx.revert();
+      if (ctx) {
+        ctx.revert();
+      }
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="parallax-container">
@@ -96,37 +109,41 @@ export default function Parallax() {
         <div 
           ref={cloudsRef}
           className="planes-layer"
-          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+          style={!isMobile ? { transform: `translateY(${scrollY * 0.3}px)` } : {}}
         >
-          <div className="plane-bg plane-1">✈️</div>
-          <div className="plane-bg plane-2">🛩️</div>
-          <div className="plane-bg plane-3">✈️</div>
-          <div className="travel-item passport-1">📔</div>
-          <div className="travel-item notebook-1">📓</div>
-          <div className="travel-item luggage-1">🧳</div>
-          <div className="travel-item passport-2">📘</div>
-          <div className="travel-item luggage-2">🎒</div>
-          <div className="travel-item notebook-2">📝</div>
-          <div className="travel-item camera-1">📷</div>
-          <div className="travel-item ticket-1">🎫</div>
+          {!isMobile && (
+            <>
+              <div className="plane-bg plane-1">✈️</div>
+              <div className="plane-bg plane-2">🛩️</div>
+              <div className="plane-bg plane-3">✈️</div>
+              <div className="travel-item passport-1">📔</div>
+              <div className="travel-item notebook-1">📓</div>
+              <div className="travel-item luggage-1">🧳</div>
+              <div className="travel-item passport-2">📘</div>
+              <div className="travel-item luggage-2">🎒</div>
+              <div className="travel-item notebook-2">📝</div>
+              <div className="travel-item camera-1">📷</div>
+              <div className="travel-item ticket-1">🎫</div>
+            </>
+          )}
         </div>
 
         <div 
           ref={mountain3Ref}
           className="mountain-layer mountain-3"
-          style={{ transform: `translateY(${scrollY * 0.4}px)` }}
+          style={!isMobile ? { transform: `translateY(${scrollY * 0.4}px)` } : {}}
         />
         
         <div 
           ref={mountain2Ref}
           className="mountain-layer mountain-2"
-          style={{ transform: `translateY(${scrollY * 0.6}px)` }}
+          style={!isMobile ? { transform: `translateY(${scrollY * 0.6}px)` } : {}}
         />
         
         <div 
           ref={mountain1Ref}
           className="mountain-layer mountain-1"
-          style={{ transform: `translateY(${scrollY * 0.8}px)` }}
+          style={!isMobile ? { transform: `translateY(${scrollY * 0.8}px)` } : {}}
         />
 
         {/* Hero Content */}
@@ -989,44 +1006,32 @@ export default function Parallax() {
             font-size: 2rem;
           }
 
-          /* Disable animations on mobile */
-          .floating-card {
-            animation: none !important;
-          }
-
+          /* Hide all emojis and animations on mobile */
           .plane-bg {
-            animation: none !important;
-            font-size: 2rem !important;
+            display: none !important;
           }
 
           .travel-item {
-            animation: none !important;
-            font-size: 1.5rem !important;
-            position: static !important;
-            display: inline-block !important;
-            margin: 0.5rem !important;
+            display: none !important;
           }
 
           .planes-layer {
-            text-align: center !important;
-            padding: 2rem 0 !important;
-            position: static !important;
-          }
-
-          .plane {
-            animation: none !important;
-            position: static !important;
-            display: block !important;
-            text-align: center !important;
-            margin: 2rem auto !important;
-          }
-
-          .plane-trail {
             display: none !important;
+          }
+
+          /* Disable all animations on mobile */
+          .floating-card {
+            animation: none !important;
+            transform: none !important;
           }
 
           .sparkle {
             animation: none !important;
+            display: none !important;
+          }
+
+          .mountain-layer {
+            transform: none !important;
           }
 
           .about-visual {
@@ -1039,6 +1044,25 @@ export default function Parallax() {
             margin: 1rem auto !important;
             display: block !important;
             max-width: 300px !important;
+            transform: none !important;
+            animation: none !important;
+          }
+
+          /* Ensure hero content is responsive */
+          .hero-content {
+            padding: 2rem 1rem !important;
+            text-align: center !important;
+          }
+
+          .hero-subtitle {
+            font-size: 1rem !important;
+            margin: 1rem 0 !important;
+          }
+
+          .hero-button {
+            margin: 1rem auto !important;
+            display: block !important;
+            width: auto !important;
           }
         }
       `}</style>
