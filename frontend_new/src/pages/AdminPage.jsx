@@ -130,6 +130,8 @@ export default function AdminPage() {
         }
         tbody tr td:first-child {
           border-radius: 4px 0 0 4px;
+          color: white;
+          background-color: rgba(108, 117, 125, 0.8);
         }
         tbody tr td:last-child {
           border-radius: 0 4px 4px 0;
@@ -138,7 +140,7 @@ export default function AdminPage() {
           padding: 8px 12px;
           border: 1px solid #dee2e6;
           font-weight: bold;
-          color: black;
+          color: white;
         }
         thead tr th:first-child {
           border-radius: 4px 0 0 4px;
@@ -157,10 +159,28 @@ export default function AdminPage() {
           width: auto;
           margin: 0;
         }
+        .admin-dashboard-title {
+          font-family: 'Abril Fatface, cursive';
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: white;
+          margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+          .admin-dashboard-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+          }
+        }
+        @media (max-width: 480px) {
+          .admin-dashboard-title {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+          }
+        }
       `}</style>
-      <div style={{ padding: 20 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ fontFamily: 'Abril Fatface, cursive', fontSize: '2.5rem', fontWeight: 'bold' }}>Admin Dashboard</h1>
+      <div style={{ padding: 20, position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}>
         <button
           onClick={handleLogout}
           style={{ padding: '8px 16px', background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
@@ -168,6 +188,8 @@ export default function AdminPage() {
           Log out
         </button>
       </div>
+      
+      <h1 className="admin-dashboard-title">Admin Dashboard</h1>
 
       {/* вкладки */}
       <div style={{ marginBottom: 10 }}>
@@ -175,7 +197,15 @@ export default function AdminPage() {
           <button key={t}
                   onClick={() => { setTab(t); setMsg(''); }}
                   disabled={tab === t}
-                  style={{ marginRight: 5 }}>
+                  style={{ 
+                    marginRight: 5, 
+                    padding: '8px 12px',
+                    background: tab === t ? '#FF9091' : '#6c757d',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 4,
+                    cursor: 'pointer'
+                  }}>
             {t.toUpperCase()}
           </button>
         ))}
@@ -314,17 +344,17 @@ export default function AdminPage() {
       {/* ---------- ITEMS ---------- */}
       {tab === 'items' && (
         <div>
-          <h2 style={{ color: 'black' }}>New Item</h2>
+          <h2 style={{ color: 'white' }}>New Item</h2>
           <input placeholder="Name" value={newItem.name}
                  onChange={e => setNewItem({ ...newItem, name: e.target.value })}/>
-          <label style={{ marginLeft: 8, color: 'black' }}>
+          <label style={{ marginLeft: 8, color: 'white' }}>
             Important?
             <input type="checkbox" checked={newItem.important}
                    onChange={e => setNewItem({ ...newItem, important: e.target.checked })}/>
           </label>
           <button onClick={addItem} style={{ marginLeft: 8, background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Add</button>
 
-          <h2 style={{ marginTop: 25, color: 'black' }}>All Items</h2>
+          <h2 style={{ marginTop: 25, color: 'white' }}>All Items</h2>
           <table>
             <thead><tr><th>#</th><th>Name</th><th>Important</th><th>Action</th></tr></thead>
             <tbody>
@@ -364,7 +394,7 @@ export default function AdminPage() {
       {/* ---------- REQUESTS ---------- */}
       {tab === 'requests' && (
         <div>
-          <h2 style={{ color: 'black' }}>Pending Item Requests</h2>
+          <h2 style={{ color: 'white' }}>Pending Item Requests</h2>
           <table>
             <thead><tr><th>#</th><th>Name</th><th>By</th><th>Action</th></tr></thead>
             <tbody>
