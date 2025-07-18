@@ -366,15 +366,19 @@ export default function AdminPage() {
       {/* ---------- ITEMS ---------- */}
       {tab === 'items' && (
         <div>
-          <h2 style={{ color: 'white' }}>New Item</h2>
-          <input placeholder="Name" value={newItem.name}
-                 onChange={e => setNewItem({ ...newItem, name: e.target.value })}/>
-          <label style={{ marginLeft: 8, color: 'white' }}>
-            Important?
-            <input type="checkbox" checked={newItem.important}
-                   onChange={e => setNewItem({ ...newItem, important: e.target.checked })}/>
-          </label>
-          <button onClick={addItem} style={{ marginLeft: 8, background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Add</button>
+          <h2 style={{ color: 'white', marginBottom: '15px' }}>New Item</h2>
+          <div style={{ marginBottom: '10px' }}>
+            <input placeholder="Name" value={newItem.name}
+                   onChange={e => setNewItem({ ...newItem, name: e.target.value })}/>
+          </div>
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              Important?
+              <input type="checkbox" checked={newItem.important}
+                     onChange={e => setNewItem({ ...newItem, important: e.target.checked })}/>
+            </label>
+          </div>
+          <button onClick={addItem} style={{ background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Add</button>
 
           <h2 style={{ marginTop: 25, color: 'white' }}>All Items</h2>
           
