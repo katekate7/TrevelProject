@@ -9,7 +9,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FF9091]">
+    <div className={`min-h-screen flex items-center justify-center ${mode === 'login' ? 'bg-[#FF9091]' : 'bg-[#282A54]'}`}>
       {/*──────────── Контейнер форми ────────────*/}
       <div
         className="

@@ -73,7 +73,7 @@ export default function RegisterForm({ onNeedLogin }) {
         type="submit"
         className="
           w-full py-3 rounded-full
-          bg-[#FF9091] border-2 border-white text-white font-semibold
+          bg-[#282A54] border-2 border-white text-white font-semibold
           transition hover:bg-opacity-90
         "
       >
