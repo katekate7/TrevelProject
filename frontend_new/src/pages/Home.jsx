@@ -3,13 +3,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginForm    from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
+import logoPink from '../images/logopink.png';
 
 export default function Home() {
   const [mode, setMode] = useState('login'); // 'login' або 'register'
   const navigate = useNavigate();
 
   return (
-    <div className={`min-h-screen flex items-center justify-center ${mode === 'login' ? 'bg-[#FF9091]' : 'bg-[#282A54]'}`}>
+    <div className={`min-h-screen flex items-center justify-center ${mode === 'login' ? 'bg-[#FF9091]' : 'bg-[#282A54]'} relative`}>
+      {/* Logo in top right */}
+      <img 
+        src={logoPink} 
+        alt="Logo" 
+        className="absolute top-4 right-4 w-16 h-16 md:w-20 md:h-20 z-20"
+      />
+      
       {/*──────────── Контейнер форми ────────────*/}
       <div
         className="

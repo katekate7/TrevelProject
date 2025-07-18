@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import logoPink from "../images/logopink.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -105,6 +106,13 @@ export default function Parallax() {
     <div className="parallax-container">
       {/* Hero Section with Parallax */}
       <section ref={heroRef} className="hero-section">
+        {/* Logo in top right */}
+        <img 
+          src={logoPink} 
+          alt="Logo" 
+          className="absolute top-4 right-4 w-16 h-16 md:w-20 md:h-20 z-50"
+        />
+        
         {/* Animated Background Elements */}
         <div 
           ref={cloudsRef}

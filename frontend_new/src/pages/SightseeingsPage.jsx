@@ -136,55 +136,36 @@ export default function SightseeingsPage() {
       <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>
         Top 20 must-see in {trip.city}
       </h1>
-      
-      {places.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🏘️</div>
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            This city is not touristic
-          </h2>
-          <p className="text-gray-300 mb-4">
-            Unfortunately, there are no sightseeing attractions available for {trip.city}. 
-            This appears to be a village or non-touristic location without documented tourist attractions in Wikipedia.
-          </p>
-          <p className="text-gray-300 mb-6">
-            <strong>Note:</strong> Since there are no tourist attractions, there is no route to plan for this destination.
-          </p>
-        </div>
-      ) : (
-        <>
-          <ul className="space-y-6">
-            {places.map(p=>(
-              <li key={p.id} className="border rounded-lg p-4 flex flex-col sm:flex-row gap-4 shadow-sm items-center sm:items-start">
-                <input
-                  type="checkbox"
-                  className="mt-1 h-5 w-5 self-start"
-                  checked={selectedTitles.has(p.title)}
-                  onChange={()=>toggle(p.title)}
-                />
-                {p.imageUrl && (
-                  <img src={p.imageUrl} alt={p.title}
-                       className="w-40 h-28 object-cover rounded-md" />
-                )}
-                <div className="w-full">
-                  <h2 className="text-xl font-semibold mb-1 text-white">{p.title}</h2>
-                  <p className="text-white">{p.desc}</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    👁 {p.views.toLocaleString()} views / 60 days
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <button
-            onClick={goToRoute}
-            disabled={selectedTitles.size===0}
-            className="mt-8 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-          >
-            ➜ Build a route
-          </button>
-        </>
-      )}
+      <ul className="space-y-6">
+        {places.map(p=>(
+          <li key={p.id} className="border rounded-lg p-4 flex flex-col sm:flex-row gap-4 shadow-sm items-center sm:items-start">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 self-start"
+              checked={selectedTitles.has(p.title)}
+              onChange={()=>toggle(p.title)}
+            />
+            {p.imageUrl && (
+              <img src={p.imageUrl} alt={p.title}
+                   className="w-40 h-28 object-cover rounded-md" />
+            )}
+            <div className="w-full">
+              <h2 className="text-xl font-semibold mb-1 text-white">{p.title}</h2>
+              <p className="text-white">{p.desc}</p>
+              <p className="text-xs text-gray-400 mt-1">
+                👁 {p.views.toLocaleString()} views / 60 days
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={goToRoute}
+        disabled={selectedTitles.size===0}
+        className="mt-8 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+      >
+        ➜ Build a route
+      </button>
     </div>
   );
 }
