@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
-import logoPink from '../images/logopink.png';
 
 export default function TripDetailPage() {
   const { id }    = useParams();
@@ -22,12 +21,6 @@ export default function TripDetailPage() {
   /* ---------- контент сторінки ---------- */
   return (
     <div className="p-6 pt-12 md:pt-6 overflow-auto relative">
-      {/* Logo in top right */}
-      <img 
-        src={logoPink} 
-        alt="Logo" 
-        className="absolute top-1.5 right-1.5 w-16 h-16 md:w-20 md:h-20 z-20"
-      />
 
       <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>
         {trip.city}, {trip.country}
