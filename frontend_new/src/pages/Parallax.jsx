@@ -110,7 +110,7 @@ export default function Parallax() {
         <img 
           src={logoPink} 
           alt="Logo" 
-          className="absolute top-4 right-4 w-16 h-16 md:w-20 md:h-20 z-50"
+          className="absolute top-1.5 right-1.5 w-16 h-16 md:w-20 md:h-20 z-50"
         />
         
         {/* Animated Background Elements */}

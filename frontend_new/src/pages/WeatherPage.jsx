@@ -50,7 +50,7 @@ export default function WeatherPage() {
 
   return (
     <div className="flex h-screen">
-      <main className="flex-1 p-6 pt-12 md:pt-6 overflow-auto">
+      <main className="flex-1 p-6 pt-12 md:pt-6 overflow-auto relative">
 
         <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>Forecast</h2>
 

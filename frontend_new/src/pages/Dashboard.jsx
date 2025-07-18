@@ -19,13 +19,13 @@ export default function Dashboard() {
 
   /* ── delete ────────────────────────────── */
   const handleDelete = async id => {
-    if (!window.confirm('Видалити цю подорож?')) return;
+    if (!window.confirm('Delete this trip?')) return;
     try {
       await api.delete(`/trips/${id}`);
       setTrips(t => t.filter(tr => tr.id !== id));
     } catch (e) {
       console.error(e);
-      alert('Не вдалося видалити');
+      alert('Failed to delete');
     }
   };
 
@@ -40,7 +40,8 @@ export default function Dashboard() {
     return <FirstTripPage onTripCreated={id => navigate(`/trip/${id}`)} />;
 
   return (
-    <div className="max-w-3xl mx-auto px-6 pt-8">
+    <div className="max-w-3xl mx-auto px-6 pt-8 relative">
+      
       <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white" style={{ fontFamily: 'Abril Fatface, cursive', fontSize: '48px' }}>
         <style>{`
           @media (min-width: 768px) {

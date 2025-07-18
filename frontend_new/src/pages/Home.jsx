@@ -16,7 +16,7 @@ export default function Home() {
       <img 
         src={mode === 'login' ? logoBlue : logoPink} 
         alt="Logo" 
-        className="absolute top-4 right-4 w-16 h-16 md:w-20 md:h-20 z-20"
+        className="absolute top-1.5 right-1.5 w-16 h-16 md:w-20 md:h-20 z-20"
       />
       
       {/*──────────── Контейнер форми ────────────*/}

@@ -87,7 +87,8 @@ export default function TripRoutePage() {
           z-index: 1 !important;
         }
       `}</style>
-      <div className="p-6 pt-12 md:pt-6 space-y-4">
+      <div className="p-6 pt-12 md:pt-6 space-y-4 relative">
+        
         <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>The route of the trip</h1>
 
         <div className="flex gap-2">
