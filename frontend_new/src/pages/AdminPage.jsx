@@ -490,22 +490,81 @@ export default function AdminPage() {
       {tab === 'requests' && (
         <div>
           <h2 style={{ color: 'white' }}>Pending Item Requests</h2>
-          <table>
-            <thead><tr><th>#</th><th>Name</th><th>By</th><th>Action</th></tr></thead>
-            <tbody>
-              {requests.map(r => (
-                <tr key={r.id}>
-                  <td>{r.id}</td>
-                  <td>{r.name}</td>
-                  <td>{r.requestedBy}</td>
-                  <td>
-                    <button onClick={() => approveReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Approve</button>
-                    <button onClick={() => rejectReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Reject</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          
+          {/* Desktop Table View */}
+          <div className="hidden-mobile">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>By</th><th>Action</th></tr></thead>
+              <tbody>
+                {requests.map(r => (
+                  <tr key={r.id}>
+                    <td>{r.id}</td>
+                    <td style={{ color: 'white' }}>{r.name}</td>
+                    <td style={{ color: 'white' }}>{r.requestedBy}</td>
+                    <td>
+                      <button onClick={() => approveReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Approve</button>
+                      <button onClick={() => rejectReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Reject</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="mobile-only" style={{ flexDirection: 'column', gap: '15px' }}>
+            {requests.map(r => (
+              <div key={r.id} style={{ 
+                border: '1px solid #dee2e6', 
+                borderRadius: '8px', 
+                padding: '15px',
+                backgroundColor: '#f9f9f9'
+              }}>
+                {/* ID Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <span style={{ fontWeight: 'bold', color: 'black' }}>#{r.id}</span>
+                </div>
+                
+                {/* Name Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px', color: 'black' }}>Name:</label>
+                  <span style={{ color: 'black' }}>{r.name}</span>
+                </div>
+                
+                {/* Requested By Row */}
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px', color: 'black' }}>Requested By:</label>
+                  <span style={{ color: 'black' }}>{r.requestedBy}</span>
+                </div>
+                
+                {/* Actions Row */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button onClick={() => approveReq(r.id)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Approve
+                  </button>
+                  <button onClick={() => rejectReq(r.id)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
