@@ -166,12 +166,34 @@ export default function AdminPage() {
           color: white;
           margin-bottom: 20px;
         }
+        
+        /* Mobile responsiveness */
+        .mobile-only {
+          display: none;
+        }
+        .hidden-mobile {
+          display: block;
+        }
+        
         @media (max-width: 768px) {
           .admin-dashboard-title {
             font-size: 1.8rem;
             margin-bottom: 30px;
           }
+          .mobile-only {
+            display: flex !important;
+            flex-direction: column;
+            gap: 15px;
+          }
+          .hidden-mobile {
+            display: none !important;
+          }
+          input, select {
+            width: 100%;
+            max-width: 100%;
+          }
         }
+        
         @media (max-width: 480px) {
           .admin-dashboard-title {
             font-size: 1.5rem;
@@ -355,39 +377,112 @@ export default function AdminPage() {
           <button onClick={addItem} style={{ marginLeft: 8, background: '#FF9091', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Add</button>
 
           <h2 style={{ marginTop: 25, color: 'white' }}>All Items</h2>
-          <table>
-            <thead><tr><th>#</th><th>Name</th><th>Important</th><th>Action</th></tr></thead>
-            <tbody>
-              {items.map(it => (
-                <tr key={it.id} style={it.important ? { color:'red' } : {}}>
-                  <td>{it.id}</td>
-                  <td>
-                    <input value={it.name}
-                           onChange={e => setItems(
-                             items.map(x => x.id === it.id ? { ...x, name: e.target.value } : x)
-                           )}/>
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <input
-                      type="checkbox"
-                      checked={it.important}
-                      className={it.important ? 'accent-red-600' : 'accent-blue-600'}
-                      onChange={() => {
-                        const upd = items.map(x =>
-                          x.id === it.id ? { ...x, important: !x.important } : x
-                        );
-                        setItems(upd);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <button onClick={() => updateItem(it)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Save</button>
-                    <button onClick={() => deleteItem(it.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Del</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          
+          {/* Desktop Table View */}
+          <div className="hidden-mobile">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>Important</th><th>Action</th></tr></thead>
+              <tbody>
+                {items.map(it => (
+                  <tr key={it.id} style={it.important ? { color:'red' } : {}}>
+                    <td>{it.id}</td>
+                    <td>
+                      <input value={it.name}
+                             onChange={e => setItems(
+                               items.map(x => x.id === it.id ? { ...x, name: e.target.value } : x)
+                             )}/>
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <input
+                        type="checkbox"
+                        checked={it.important}
+                        className={it.important ? 'accent-red-600' : 'accent-blue-600'}
+                        onChange={() => {
+                          const upd = items.map(x =>
+                            x.id === it.id ? { ...x, important: !x.important } : x
+                          );
+                          setItems(upd);
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <button onClick={() => updateItem(it)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Save</button>
+                      <button onClick={() => deleteItem(it.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Del</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="mobile-only" style={{ flexDirection: 'column', gap: '15px' }}>
+            {items.map(it => (
+              <div key={it.id} style={{ 
+                border: '1px solid #dee2e6', 
+                borderRadius: '8px', 
+                padding: '15px',
+                backgroundColor: '#f9f9f9'
+              }}>
+                {/* ID Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <span style={{ fontWeight: 'bold', color: 'black' }}>#{it.id}</span>
+                </div>
+                
+                {/* Name Row */}
+                <div style={{ marginBottom: '10px' }}>
+                  <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px', color: 'black' }}>Name:</label>
+                  <input value={it.name}
+                         onChange={e => setItems(
+                           items.map(x => x.id === it.id ? { ...x, name: e.target.value } : x)
+                         )}
+                         style={{ width: '100%' }}/>
+                </div>
+                
+                {/* Important Row */}
+                <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <label style={{ fontWeight: 'bold', color: 'black', margin: 0 }}>Important:</label>
+                  <input
+                    type="checkbox"
+                    checked={it.important}
+                    className={it.important ? 'accent-red-600' : 'accent-blue-600'}
+                    onChange={() => {
+                      const upd = items.map(x =>
+                        x.id === it.id ? { ...x, important: !x.important } : x
+                      );
+                      setItems(upd);
+                    }}
+                  />
+                </div>
+                
+                {/* Actions Row */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button onClick={() => updateItem(it)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Save
+                  </button>
+                  <button onClick={() => deleteItem(it.id)}
+                          style={{ 
+                            padding: '6px 12px', 
+                            background: '#6c757d', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '4px', 
+                            cursor: 'pointer' 
+                          }}>
+                    Del
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
