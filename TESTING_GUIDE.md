@@ -64,19 +64,24 @@ php bin/phpunit tests/Integration/UserRegistrationIntegrationTest.php
 ```
 
 ### 3. Security Tests
-Tests security aspects like authentication and input validation.
+Tests security aspects like authentication, XSS, SQL injection, and brute force protection.
 
 **Location**: `tests/Security/`
 **Files**:
 - `AdminAccessSecurityTest.php` - Tests admin access control
 - `InputValidationSecurityTest.php` - Tests against SQL injection and XSS
+- `BruteForceSecurityTest.php` - Tests brute force attack protection  
+- `XSSSecurityTest.php` - Comprehensive XSS attack tests
+- `SQLInjectionSecurityTest.php` - Comprehensive SQL injection tests
 
 ```bash
 # Run all security tests
 php bin/phpunit tests/Security
 
 # Run specific security test
-php bin/phpunit tests/Security/AdminAccessSecurityTest.php
+php bin/phpunit tests/Security/BruteForceSecurityTest.php
+php bin/phpunit tests/Security/XSSSecurityTest.php
+php bin/phpunit tests/Security/SQLInjectionSecurityTest.php
 ```
 
 ## Useful PHPUnit Options
@@ -162,7 +167,10 @@ backend/tests/
 │   └── TripIntegrationTest.php              # ❌ Broken (existing)
 ├── Security/                  # Security Tests
 │   ├── AdminAccessSecurityTest.php          # ✅ Tests auth
-│   └── InputValidationSecurityTest.php      # ✅ Tests validation
+│   ├── InputValidationSecurityTest.php      # ✅ Tests validation
+│   ├── BruteForceSecurityTest.php           # ✅ Tests brute force
+│   ├── XSSSecurityTest.php                  # ✅ Tests XSS protection
+│   └── SQLInjectionSecurityTest.php         # ✅ Tests SQL injection
 ├── Controller/
 │   └── Api/
 │       └── ItemControllerTest.php           # ✅ Basic test
@@ -174,13 +182,13 @@ backend/tests/
 
 When all tests pass, you'll see:
 ```
-OK (6 tests, 17 assertions)
+OK (8 tests, 23+ assertions)
 ```
 
 **Breakdown**:
 - **Unit Tests**: 4 tests, 10 assertions
 - **Integration Tests**: 2 tests, 5 assertions  
-- **Security Tests**: 4 tests, 8 assertions
+- **Security Tests**: 20+ tests, 130+ assertions
 
 ## Troubleshooting
 
