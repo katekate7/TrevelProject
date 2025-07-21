@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
+import SEO from '../components/SEO/SEO';
+import { seoConfig, generateCanonicalUrl } from '../components/SEO/seoConfig';
 
 export default function ItemsPage() {
   const { id: tripId } = useParams();
@@ -47,7 +49,14 @@ export default function ItemsPage() {
   };
 
   return (
-    <div className="p-6 pt-12 md:pt-6 max-w-md mx-auto relative">
+    <>
+      <SEO 
+        title={seoConfig.checklist.title}
+        description={seoConfig.checklist.description}
+        keywords={seoConfig.checklist.keywords}
+        url={generateCanonicalUrl(`/trip/${tripId}/items`)}
+      />
+      <div className="p-6 pt-12 md:pt-6 max-w-md mx-auto relative">
       <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>Things for packing</h1>
 
       <ul className="space-y-2 list-disc pl-4">
@@ -99,5 +108,6 @@ export default function ItemsPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

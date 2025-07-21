@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
+import SEO from '../components/SEO/SEO';
+import { seoConfig, generateCanonicalUrl } from '../components/SEO/seoConfig';
 
 export default function WeatherPage() {
   const { id } = useParams();
@@ -49,7 +51,14 @@ export default function WeatherPage() {
   }
 
   return (
-    <div className="flex h-screen">
+    <>
+      <SEO 
+        title={seoConfig.weather.title}
+        description={seoConfig.weather.description}
+        keywords={seoConfig.weather.keywords}
+        url={generateCanonicalUrl(`/trip/${id}/weather`)}
+      />
+      <div className="flex h-screen">
       <main className="flex-1 p-6 pt-12 md:pt-6 overflow-auto relative">
 
         <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>Forecast</h2>
@@ -80,5 +89,6 @@ export default function WeatherPage() {
         </div>
       </main>
     </div>
+    </>
   );
 }

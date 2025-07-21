@@ -17,8 +17,10 @@
     "leaflet": "^1.9.4",
     "lodash.debounce": "^4.0.8",
     "openrouteservice-js": "^0.4.1",
+    "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-helmet-async": "^2.0.5",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.6.3"
   },

@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api, { saveTripPlaces } from '../api';
+import SEO from '../components/SEO/SEO';
+import { seoConfig, generateCanonicalUrl } from '../components/SEO/seoConfig';
 
 // YYYYMMDD helper
 const fmt = d => d.toISOString().slice(0,10).replace(/-/g, '');
@@ -132,7 +134,14 @@ export default function SightseeingsPage() {
   if (phase === 'error')          return <p className="p-6 text-red-600">An error occurred</p>;
 
   return (
-    <div className="p-6 pt-12 md:pt-6 max-w-4xl mx-auto relative">
+    <>
+      <SEO 
+        title={`Que visiter à ${trip?.city} - ${seoConfig.destinations.title}`}
+        description={`Découvrez les meilleurs lieux à visiter à ${trip?.city}. Guide touristique complet avec les attractions incontournables et itinéraires recommandés.`}
+        keywords={`que visiter à ${trip?.city}, ${trip?.city} tourisme, attractions ${trip?.city}, ${seoConfig.destinations.keywords}`}
+        url={generateCanonicalUrl(`/trip/${id}/sightseeings`)}
+      />
+      <div className="p-6 pt-12 md:pt-6 max-w-4xl mx-auto relative">
       
       <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Abril Fatface, cursive' }}>
         Top 20 must-see in {trip.city}
@@ -168,5 +177,6 @@ export default function SightseeingsPage() {
         ➜ Build a route
       </button>
     </div>
+    </>
   );
 }
