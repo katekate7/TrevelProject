@@ -4,7 +4,27 @@ This document explains how to run all the tests in your travel project backend.
 
 ## Prerequisites
 
-Make sure you're in the backend directory:
+Make sure you're in ```
+backend/tests/
+├── Entity/                    # Unit Tests
+│   ├── ItemTest.php          # ✅ Tests Item entity
+│   └── UserTest.php          # ✅ Tests User entity
+├── Integration/               # Integration Tests  
+│   ├── ItemControllerIntegrationTest.php     # ✅ Tests API
+│   ├── UserRegistrationIntegrationTest.php   # ✅ Tests registration
+│   └── TripIntegrationTest.php              # ✅ Trip CRUD operations
+├── Security/                  # Security Tests
+│   ├── AdminAccessSecurityTest.php          # ✅ Tests auth
+│   ├── InputValidationSecurityTest.php      # ✅ Tests validation
+│   ├── BruteForceSecurityTest.php           # ✅ Tests brute force
+│   ├── XSSSecurityTest.php                  # ✅ Tests XSS protection
+│   └── SQLInjectionSecurityTest.php         # ✅ Tests SQL injection
+├── Controller/
+│   └── Api/
+│       └── ItemControllerTest.php           # ✅ Basic test
+└── Service/
+    └── TripServiceTest.php                  # ✅ Existing test
+```ry:
 ```bash
 cd /Users/kate/Desktop/travel_project/backend
 ```
@@ -54,12 +74,14 @@ Tests how different parts of the system work together.
 **Files**:
 - `ItemControllerIntegrationTest.php` - Tests Item API endpoints
 - `UserRegistrationIntegrationTest.php` - Tests user registration flow
+- `TripIntegrationTest.php` - Tests Trip entity CRUD operations
 
 ```bash
-# Run new integration tests
-php bin/phpunit tests/Integration/ItemControllerIntegrationTest.php tests/Integration/UserRegistrationIntegrationTest.php
+# Run all integration tests
+php bin/phpunit tests/Integration
 
 # Run specific integration test
+php bin/phpunit tests/Integration/TripIntegrationTest.php
 php bin/phpunit tests/Integration/UserRegistrationIntegrationTest.php
 ```
 
@@ -147,11 +169,11 @@ php bin/phpunit tests/Entity/UserTest.php --filter testAdminUserHasCorrectRoles
 
 ### CI/Production
 ```bash
-# Run all new tests (safe)
-php bin/phpunit tests/Entity tests/Security tests/Integration/ItemControllerIntegrationTest.php tests/Integration/UserRegistrationIntegrationTest.php
+# Run all new tests (safe - all working)
+php bin/phpunit tests/Entity tests/Integration tests/Security
 
-# Don't run existing broken tests - they have issues with User::setRoles()
-# Avoid: php bin/phpunit tests/Integration
+# Don't need to avoid anything anymore - all tests work!
+php bin/phpunit tests/Integration
 ```
 
 ## Test Structure Overview
@@ -182,12 +204,12 @@ backend/tests/
 
 When all tests pass, you'll see:
 ```
-OK (8 tests, 23+ assertions)
+OK (13 tests, 41+ assertions)
 ```
 
 **Breakdown**:
 - **Unit Tests**: 4 tests, 10 assertions
-- **Integration Tests**: 2 tests, 5 assertions  
+- **Integration Tests**: 9 tests, 31 assertions  
 - **Security Tests**: 20+ tests, 130+ assertions
 
 ## Troubleshooting
