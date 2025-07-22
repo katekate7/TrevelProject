@@ -35,11 +35,11 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
     } catch (err) {
       // Handle different types of errors more gracefully
       if (err.response?.status === 401) {
-        setMessage('❌ Невірний email або пароль');
+        setMessage('❌ Incorrect email or password');
       } else if (err.response?.data?.message) {
         setMessage(`❌ ${err.response.data.message}`);
       } else {
-        setMessage('❌ Помилка входу. Спробуйте ще раз.');
+        setMessage('❌ Login error. Please try again.');
       }
     }
   };
