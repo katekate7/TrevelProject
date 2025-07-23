@@ -97,7 +97,7 @@ export default function SightseeingsPage() {
         setSelTitles(new Set(data.map(p => p.title)));
         setPhase('ready');
       } catch (e) {
-        console.error('Не змогли підвантажити saved places:', e);
+        console.error('Could not load saved places:', e);
         setPhase('ready'); // все одно ГУІ покаже wiki
       }
     })();

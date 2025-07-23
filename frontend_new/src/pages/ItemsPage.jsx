@@ -88,7 +88,7 @@ export default function ItemsPage() {
       {showReq && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
-            <h2 className="text-xl font-semibold mb-4">Offer a new item</h2>
+            <h2 className="text-xl font-semibold mb-4 text-black">Offer a new item</h2>
             <input type="text"
                    placeholder="Name of the item"
                    className="w-full border px-3 py-2 rounded mb-4"
@@ -97,7 +97,7 @@ export default function ItemsPage() {
                    disabled={busy}/>
             <div className="flex justify-end gap-2">
               <button onClick={() => setShow(false)}
-                      className="px-4 py-2 text-gray-600 hover:underline"
+                      className="px-4 py-2 text-gray-600 hover:underline text-white rounded"
                       disabled={busy}>Cancel</button>
               <button onClick={sendReq}
                       className="px-4 py-2 text-white rounded hover:bg-[#e6818c]"
