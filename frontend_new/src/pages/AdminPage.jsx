@@ -411,8 +411,8 @@ export default function AdminPage() {
               {requests.map(r => (
                 <tr key={r.id}>
                   <td>{r.id}</td>
-                  <td>{r.name}</td>
-                  <td>{r.requestedBy}</td>
+                  <td style={{color: 'white'}}>{r.name}</td>
+                  <td style={{color: 'white'}}>{r.requestedBy}</td>
                   <td>
                     <button onClick={() => approveReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px', marginRight: '5px' }}>Approve</button>
                     <button onClick={() => rejectReq(r.id)} style={{ background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '6px 12px' }}>Reject</button>
