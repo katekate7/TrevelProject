@@ -40,11 +40,11 @@ export default function ItemsPage() {
     setBusy(true);
     try {
       await api.post('/item-requests', { name: reqName.trim() });
-      alert('Запит відправлено!');
+      alert('The request has been sent!');
       setShow(false);
       setName('');
     } catch {
-      alert('Помилка відправки');
+      alert('Error sending request');
     } finally { setBusy(false); }
   };
 

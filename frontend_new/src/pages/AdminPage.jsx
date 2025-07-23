@@ -15,7 +15,7 @@ export default function AdminPage() {
 
   /* форма «новий юзер / адмін» */
   const [newUser, setNewUser] = useState({
-    username: '', email: '', password: '', role: 'user',
+    username: '', email: '', role: 'user',
   });
 
   const nav = useNavigate();
@@ -44,17 +44,18 @@ export default function AdminPage() {
 
   /* ───────── USER CRUD ───────── */
   const createUser = () => {
-    const { username, email, password, role } = newUser;
-    if (!username || !email || !password) return;
+    const { username, email, role } = newUser;
+    if (!username || !email) return;
     axios.post('/users', newUser)
          .then(() => { 
-           setNewUser({ username:'', email:'', password:'', role:'user' }); 
+           setNewUser({ username:'', email:'', role:'user' }); 
            fetchUsers(); 
-           setMsg(`Користувача ${username} створено успішно`);
+           setMsg(`User ${username} created successfully. Password reset email sent to ${email}`);
            setMessageType('success');
          })
-         .catch(() => {
-           setMsg('Помилка створення користувача');
+         .catch((err) => {
+           const errorMsg = err.response?.data?.error || 'Error creating user';
+           setMsg(`Error: ${errorMsg}`);
            setMessageType('error');
          });
   };
@@ -65,7 +66,7 @@ export default function AdminPage() {
          .catch(() => setMsg('Помилка'));
 
   const deleteUser = id =>
-    window.confirm('Видалити юзера?') &&
+    window.confirm('Delete a user?') &&
     axios.delete(`/users/${id}`).then(fetchUsers).catch(() => setMsg('Помилка'));
 
   const resetPwd = id => {
@@ -234,8 +235,6 @@ export default function AdminPage() {
                    onChange={e => setNewUser({ ...newUser, username: e.target.value })}/>
             <input placeholder="Email" type="email" value={newUser.email}
                    onChange={e => setNewUser({ ...newUser, email: e.target.value })}/>
-            <input placeholder="Password" type="password" value={newUser.password}
-                   onChange={e => setNewUser({ ...newUser, password: e.target.value })}/>
             <select value={newUser.role}
                     onChange={e => setNewUser({ ...newUser, role: e.target.value })}>
               <option value="user">user</option>
@@ -252,8 +251,19 @@ export default function AdminPage() {
                 cursor: 'pointer' 
               }}
             >
-              Add
+              Create & Send Email
             </button>
+          </div>
+          <div style={{ 
+            backgroundColor: '#e7f3ff', 
+            border: '1px solid #b3d9ff', 
+            borderRadius: '4px', 
+            padding: '10px', 
+            marginBottom: '20px',
+            fontSize: '14px',
+            color: '#004085'
+          }}>
+            <strong>Security Note:</strong> No password required. The system will automatically generate a secure password reset token and send an email to the user with instructions to set their password.
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
