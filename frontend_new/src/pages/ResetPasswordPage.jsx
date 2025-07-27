@@ -15,17 +15,17 @@ const ResetPasswordPage = () => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      setError('Паролі не співпадають');
+      setError('Passwords do not match');
       return;
     }
 
     if (password.length < 6) {
-      setError('Пароль має бути не менше 6 символів');
+      setError('Password must be at least 6 characters long');
       return;
     }
 
     if (!/(?=.*[a-zA-Z])/.test(password)) {
-      setError('Пароль має містити принаймні одну літеру');
+      setError('Password must contain at least one letter');
       return;
     }
 
@@ -38,7 +38,7 @@ const ResetPasswordPage = () => {
         password: password
       });
 
-      setMessage('Пароль успішно змінено! Перенаправлення на сторінку входу...');
+      setMessage('Password has been successfully changed! Redirecting to the login page...');
       setTimeout(() => {
         navigate('/start');
       }, 3000);
@@ -46,7 +46,7 @@ const ResetPasswordPage = () => {
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
-        setError('Сталася помилка. Спробуйте ще раз.');
+        setError('An error occurred. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -58,10 +58,10 @@ const ResetPasswordPage = () => {
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Скидання пароля
+            Resetting the password
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Введіть новий пароль для вашого акаунта
+            Enter a new password for your account
           </p>
         </div>
         
@@ -69,7 +69,7 @@ const ResetPasswordPage = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="password" className="sr-only">
-                Новий пароль
+                New Password
               </label>
               <input
                 id="password"
@@ -77,14 +77,14 @@ const ResetPasswordPage = () => {
                 type="password"
                 required
                 className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Новий пароль"
+                placeholder="New Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div>
               <label htmlFor="confirmPassword" className="sr-only">
-                Підтвердіть пароль
+                Confirm your password
               </label>
               <input
                 id="confirmPassword"
@@ -92,7 +92,7 @@ const ResetPasswordPage = () => {
                 type="password"
                 required
                 className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Підтвердіть новий пароль"
+                placeholder="Confirm your new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -117,7 +117,7 @@ const ResetPasswordPage = () => {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Збереження...' : 'Змінити пароль'}
+              {loading ? 'Saving...' : 'Change Password'}
             </button>
           </div>
 

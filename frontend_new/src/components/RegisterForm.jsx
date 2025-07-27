@@ -19,7 +19,7 @@ export default function RegisterForm({ onNeedLogin }) {
 
       navigate('/dashboard');
     } catch (err) {
-      const msg = err.response?.data?.error || '❌ Помилка реєстрації';
+      const msg = err.response?.data?.error || '❌ Registration error';
       setMessage(msg);
     }
   };
@@ -82,7 +82,7 @@ export default function RegisterForm({ onNeedLogin }) {
 
       {/* Error message */}
       {message && (
-        <p className="text-center text-sm text-red-600">{message.replace('Помилка реєстрації', 'Registration error')}</p>
+        <p className="text-center text-sm text-red-600">{message.replace('Registration error', 'Registration error')}</p>
       )}
 
       {/* Links (same style as login) */}
