@@ -36,11 +36,11 @@ export default function AdminPage() {
   }, []);
 
   const fetchAll = () => { fetchUsers(); fetchItems(); fetchRequests(); };
-  const fetchUsers    = () => axios.get('/users').then(r => setUsers(r.data)).catch(()=>setMsg('Не вдалось юзерів'));
-  const fetchItems    = () => axios.get('/items').then(r => setItems(r.data)).catch(()=>setMsg('Не вдалось речей'));
+  const fetchUsers    = () => axios.get('/users').then(r => setUsers(r.data)).catch(()=>setMsg('Failed to load users'));
+  const fetchItems    = () => axios.get('/items').then(r => setItems(r.data)).catch(()=>setMsg('Failed to load items'));
   const fetchRequests = () => axios.get('/item-requests?status=pending')
                                    .then(r => setRequests(r.data))
-                                   .catch(()=>setMsg('Не вдалось заявок'));
+                                   .catch(()=>setMsg('Failed to load applications'));
 
   /* ───────── USER CRUD ───────── */
   const createUser = () => {
@@ -63,26 +63,26 @@ export default function AdminPage() {
   const updateUser = u =>
     axios.put(`/users/${u.id}`, { username: u.username, email: u.email, role: u.role })
          .then(fetchUsers)
-         .catch(() => setMsg('Помилка'));
+         .catch(() => setMsg('Failed to update user'));
 
   const deleteUser = id =>
     window.confirm('Delete a user?') &&
-    axios.delete(`/users/${id}`).then(fetchUsers).catch(() => setMsg('Помилка'));
+    axios.delete(`/users/${id}`).then(fetchUsers).catch(() => setMsg('Failed to delete user'));
 
   const resetPwd = id => {
     const user = users.find(u => u.id === id);
     if (!user) return;
     
-    if (!window.confirm(`Надіслати лінк скидання пароля на ${user.email}?`)) return;
+    if (!window.confirm(`Send password reset link to ${user.email}?`)) return;
     
     axios.post(`/users/${id}/reset-password`)
          .then(() => {
-           setMsg(`Лінк скидання пароля надіслано на ${user.email}`);
+           setMsg(`Password reset link sent to ${user.email}`);
            setMessageType('success');
          })
          .catch((err) => {
-           const errorMsg = err.response?.data?.error || 'Помилка відправки листа';
-           setMsg(`Помилка: ${errorMsg}`);
+           const errorMsg = err.response?.data?.error || 'Failed to send email';
+           setMsg(`Error: ${errorMsg}`);
            setMessageType('error');
          });
   };
@@ -91,27 +91,27 @@ export default function AdminPage() {
   const addItem = () =>
     axios.post('/items', newItem)
          .then(() => { setNewItem({ name:'', important:false }); fetchItems(); })
-         .catch(() => setMsg('Помилка створення'));
+         .catch(() => setMsg('Failed to create item'));
 
   const updateItem = i =>
     axios.patch(`/items/${i.id}`, { name: i.name, important: i.important })
          .then(fetchItems)
-         .catch(() => setMsg('Помилка оновлення'));
+         .catch(() => setMsg('Failed to update item'));
 
   const deleteItem = id =>
-    window.confirm('Видалити річ?') &&
-    axios.delete(`/items/${id}`).then(fetchItems).catch(()=>setMsg('Помилка'));
+    window.confirm('Delete item?') &&
+    axios.delete(`/items/${id}`).then(fetchItems).catch(()=>setMsg('Failed to delete item'));
 
   /* ───────── REQUESTS ───────── */
   const approveReq = id =>
     axios.patch(`/item-requests/${id}`, { action: 'approve' })
          .then(()=>{ fetchItems(); fetchRequests(); })
-         .catch(()=>setMsg('Помилка'));
+         .catch(()=>setMsg('Failed to approve request'));
 
   const rejectReq = id =>
     axios.patch(`/item-requests/${id}`, { action: 'reject' })
          .then(fetchRequests)
-         .catch(()=>setMsg('Помилка'));
+         .catch(()=>setMsg('Failed to reject request'));
 
   /* ───────── UI ───────── */
   return (
