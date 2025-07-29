@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Parallax component - interactive landing page with parallax scrolling effects
+ * This component creates an immersive parallax scrolling experience with animated travel-themed
+ * elements, GSAP animations, and responsive design for the main landing page.
+ */
+
 // src/pages/Parallax.jsx
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -5,102 +11,161 @@ import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import logoPink from "../images/logopink.png";
 
+// Register GSAP ScrollTrigger plugin for scroll-based animations
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Parallax Component
+ * 
+ * Main landing page with parallax scrolling effects, animated travel elements,
+ * and responsive design. Features multiple sections with different scroll speeds,
+ * GSAP animations, and mobile optimizations.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered parallax landing page with animations
+ * 
+ * @example
+ * // Used as the main public landing page
+ * <Route path="/parallax" element={<Parallax />} />
+ */
 export default function Parallax() {
+  /** React Router navigation hook for programmatic navigation */
   const navigate = useNavigate();
+  
+  /** @type {[number, Function]} Current scroll position for parallax calculations */
   const [scrollY, setScrollY] = useState(0);
+  
+  /** @type {[boolean, Function]} Mobile device detection for conditional rendering */
   const [isMobile, setIsMobile] = useState(false);
   
-  // Refs for parallax elements
+  // Refs for parallax elements - used for GSAP animations and scroll effects
+  /** @type {React.RefObject} Reference to hero section */
   const heroRef = useRef(null);
+  
+  /** @type {React.RefObject} Reference to stars/background elements */
   const starsRef = useRef(null);
+  
+  /** @type {React.RefObject} Reference to mountain layer 1 (foreground) */
   const mountain1Ref = useRef(null);
+  
+  /** @type {React.RefObject} Reference to mountain layer 2 (middle) */
   const mountain2Ref = useRef(null);
+  
+  /** @type {React.RefObject} Reference to mountain layer 3 (background) */
   const mountain3Ref = useRef(null);
+  
+  /** @type {React.RefObject} Reference to clouds/planes layer */
   const cloudsRef = useRef(null);
+  
+  /** @type {React.RefObject} Reference to main title element */
   const titleRef = useRef(null);
+  
+  /** @type {React.RefObject} Reference to subtitle element */
   const subtitleRef = useRef(null);
+  
+  /** @type {React.RefObject} Reference to call-to-action button */
   const ctaRef = useRef(null);
+  
+  /** @type {React.RefObject} Reference to features section */
   const featuresRef = useRef(null);
-  const aboutRef = useRef(null);  useEffect(() => {
+  
+  /** @type {React.RefObject} Reference to about section */
+  const aboutRef = useRef(null);  /**
+   * Effect hook for scroll and animation setup
+   * Handles scroll event listeners, mobile detection, and GSAP animation setup
+   * Includes cleanup for performance optimization
+   * 
+   * @async
+   * @function
+   */
+  useEffect(() => {
+    /**
+     * Updates scroll position for parallax calculations
+     * @function
+     */
     const handleScroll = () => setScrollY(window.scrollY);
+    
+    /**
+     * Detects mobile devices to disable resource-intensive animations
+     * @function
+     */
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
     
-    // Initial checks
+    // Initial checks and event listeners setup
     checkMobile();
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', checkMobile);
 
-    let ctx;
+    let ctx; // GSAP context for cleanup
     
-    // GSAP Animations - only on desktop
+    // GSAP Animations - only on desktop for performance
     if (!isMobile) {
       ctx = gsap.context(() => {
-        // Features section animation
+        // Features section staggered animation on scroll
         gsap.fromTo(".feature-card",
-          { y: 100, opacity: 0 },
+          { y: 100, opacity: 0 }, // Initial state: below and invisible
           {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.2,
+            y: 0,                 // Final state: original position
+            opacity: 1,           // Final state: fully visible
+            duration: 0.8,        // Animation duration
+            stagger: 0.2,         // Delay between each card animation
             scrollTrigger: {
               trigger: featuresRef.current,
-              start: "top 80%",
-              end: "bottom 20%",
+              start: "top 80%",   // Start when top of section is 80% down viewport
+              end: "bottom 20%",  // End when bottom is 20% from top
             }
           }
         );
 
-        // Floating animation for planes
+        // Floating animation for planes - continuous loop
         gsap.to(cloudsRef.current, {
-          y: -15,
-          duration: 4,
-          ease: "power2.inOut",
-          yoyo: true,
-          repeat: -1
+          y: -15,               // Move up 15px
+          duration: 4,          // 4 second duration
+          ease: "power2.inOut", // Smooth easing
+          yoyo: true,          // Reverse animation
+          repeat: -1           // Infinite repeat
         });
 
-        // Additional hero animations for travel vibes
+        // Travel items entrance animation with bounce effect
         gsap.fromTo(".travel-item",
-          { scale: 0, rotation: -180, opacity: 0 },
+          { scale: 0, rotation: -180, opacity: 0 }, // Start: small, rotated, invisible
           {
-            scale: 1,
-            rotation: 0,
-            opacity: 0.7,
-            duration: 1.5,
-            stagger: 0.3,
-            ease: "back.out(1.7)",
-            delay: 1
+            scale: 1,           // End: normal size
+            rotation: 0,        // End: no rotation
+            opacity: 0.7,       // End: semi-transparent
+            duration: 1.5,      // Animation duration
+            stagger: 0.3,       // Stagger between items
+            ease: "back.out(1.7)", // Bounce-back easing
+            delay: 1            // Initial delay
           }
         );
 
-        // Continuous gentle movement for planes
+        // Continuous gentle movement for background planes
         gsap.to(".plane-bg", {
-          y: "+=20",
-          x: "+=10",
-          rotation: "+=5",
-          duration: 3,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          stagger: 0.5
+          y: "+=20",            // Move down 20px
+          x: "+=10",            // Move right 10px
+          rotation: "+=5",      // Rotate 5 degrees
+          duration: 3,          // 3 second duration
+          ease: "sine.inOut",   // Smooth sine easing
+          yoyo: true,          // Reverse animation
+          repeat: -1,          // Infinite repeat
+          stagger: 0.5         // Different timing for each plane
         });
 
       });
     }
 
+    // Cleanup function to prevent memory leaks
     return () => {
       if (ctx) {
-        ctx.revert();
+        ctx.revert(); // Clean up GSAP animations
       }
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
     };
-  }, [isMobile]);
+  }, [isMobile]); // Re-run when mobile state changes
 
   return (
     <div className="parallax-container">

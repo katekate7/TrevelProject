@@ -1,3 +1,9 @@
+/**
+ * @fileoverview SightseeingsPage component for displaying city attractions
+ * This component fetches tourist attractions from Wikipedia, shows popularity data,
+ * and allows users to select places to visit for route planning.
+ */
+
 // src/pages/SightseeingsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -5,84 +11,156 @@ import api, { saveTripPlaces } from '../api';
 import SEO from '../components/SEO/SEO';
 import { seoConfig, generateCanonicalUrl } from '../components/SEO/seoConfig';
 
-// YYYYMMDD helper
+/**
+ * Helper function to format date as YYYYMMDD
+ * Used for Wikipedia page views API requests
+ * 
+ * @function
+ * @param {Date} d - Date object to format
+ * @returns {string} Formatted date string YYYYMMDD
+ */
 const fmt = d => d.toISOString().slice(0,10).replace(/-/g, '');
 
+/**
+ * SightseeingsPage Component
+ * 
+ * Displays top tourist attractions for a city fetched from Wikipedia.
+ * Features popularity ranking based on page views, image thumbnails,
+ * and selection interface for route planning. Integrates multiple APIs:
+ * - Wikipedia Category API for attraction lists
+ * - Wikipedia REST API for summaries and images
+ * - Wikimedia Pageviews API for popularity data
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered sightseeing attractions page
+ * 
+ * @example
+ * // Used to display attractions for trip planning
+ * <Route path="/trip/:id/sightseeings" element={<SightseeingsPage />} />
+ */
 export default function SightseeingsPage() {
+  /** Trip ID extracted from URL parameters */
   const { id } = useParams();
+  
+  /** React Router navigation hook */
   const navigate = useNavigate();
 
-  const [trip, setTrip]               = useState(null);
-  const [places, setPlaces]           = useState([]);
+  /** @type {[Object|null, Function]} Trip data containing city information */
+  const [trip, setTrip] = useState(null);
+  
+  /** @type {[Array<Object>, Function]} Array of tourist attractions with details */
+  const [places, setPlaces] = useState([]);
+  
+  /** @type {[Set<string>, Function]} Set of selected attraction titles for O(1) lookup */
   const [selectedTitles, setSelTitles] = useState(new Set());
-  const [phase, setPhase]             = useState('loading');
-  // loading -> loadingWiki -> loadingSaved -> ready -> error
+  
+  /** @type {[string, Function]} Current loading phase state machine */
+  const [phase, setPhase] = useState('loading');
+  // State machine: loading -> loadingWiki -> loadingSaved -> ready -> error
 
-  // 1️⃣ Load trip (for city)
+  /**
+   * Effect hook 1: Load trip data to get city information
+   * Fetches basic trip details needed for Wikipedia API calls
+   * 
+   * @async
+   * @function
+   */
+  // 1️⃣ Load trip data (for city name)
   useEffect(() => {
     api.get(`/trips/${id}`)
       .then(r => {
-        setTrip(r.data);
-        setPhase('loadingWiki');
+        setTrip(r.data);          // Store trip data
+        setPhase('loadingWiki');  // Advance to next phase
       })
       .catch(e => {
         console.error(e);
-        setPhase('error');
+        setPhase('error');        // Set error state on failure
       });
   }, [id]);
 
-  // 2️⃣ Load wiki places
+  /**
+   * Effect hook 2: Load Wikipedia attractions data
+   * Complex multi-step process to fetch and enrich attraction data:
+   * 1. Get category members from Wikipedia
+   * 2. Filter out unwanted pages
+   * 3. Fetch detailed info for each attraction
+   * 4. Get popularity data from pageviews
+   * 5. Sort by popularity and limit to top 20
+   * 
+   * @async
+   * @function
+   */
+  // 2️⃣ Load Wikipedia attractions data
   useEffect(() => {
     if (phase !== 'loadingWiki' || !trip) return;
+    
     (async () => {
       try {
+        // Step 1: Fetch tourist attractions category from Wikipedia
         const cat = encodeURIComponent(`Category:Tourist attractions in ${trip.city}`);
         const list = await fetch(
           `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*` +
           `&list=categorymembers&cmtitle=${cat}&cmtype=page&cmlimit=500`
-        ).then(r=>r.json());
+        ).then(r => r.json());
 
+        // Step 2: Filter out unwanted page types (lists, outlines, etc.)
         const bad = /^(List of|Outline of|Timeline of|Landmarks in|History of)/i;
         const raw = list.query.categorymembers.filter(p => !bad.test(p.title));
 
+        // Step 3: Setup date range for pageview statistics (last 60 days)
         const today = new Date();
-        const end   = fmt(new Date(today - 1*24*3600*1000));
-        const start = fmt(new Date(today - 60*24*3600*1000));
+        const end = fmt(new Date(today - 1*24*3600*1000));      // Yesterday
+        const start = fmt(new Date(today - 60*24*3600*1000));   // 60 days ago
 
+        /**
+         * Loads detailed information for a single attraction
+         * Fetches summary, image, coordinates, and popularity data
+         * 
+         * @async
+         * @function
+         * @param {Object} p - Page object from Wikipedia API
+         * @returns {Object|null} Enriched attraction data or null if failed
+         */
         const loadOne = async p => {
           try {
+            // Fetch page summary and basic info
             const sum = await fetch(
               `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(p.title)}`
-            ).then(r=>r.json());
-            const pv  = await fetch(
+            ).then(r => r.json());
+            
+            // Fetch pageview statistics for popularity ranking
+            const pv = await fetch(
               `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article` +
               `/en.wikipedia.org/all-access/user/${encodeURIComponent(p.title)}` +
               `/daily/${start}/${end}`
-            ).then(r=>r.ok? r.json(): {items:[]} );
+            ).then(r => r.ok ? r.json() : {items: []});
 
             return {
-              id:       p.pageid,
-              title:    p.title,
-              desc:     sum.extract || '—',
-              imageUrl: sum.thumbnail?.source || null,
-              lat:      sum.coordinates?.lat,
-              lng:      sum.coordinates?.lon,
-              views:    (pv.items||[]).reduce((t,i)=>t+(i.views||0),0),
+              id: p.pageid,                                      // Wikipedia page ID
+              title: p.title,                                    // Attraction name
+              desc: sum.extract || '—',                          // Description
+              imageUrl: sum.thumbnail?.source || null,           // Thumbnail image
+              lat: sum.coordinates?.lat,                         // Latitude
+              lng: sum.coordinates?.lon,                         // Longitude
+              views: (pv.items || []).reduce((t,i) => t + (i.views || 0), 0), // Total views
             };
-          } catch { return null; }
+          } catch { 
+            return null; // Skip failed requests
+          }
         };
 
+        // Step 4: Process all attractions in parallel and filter/sort results
         const all = (await Promise.all(raw.map(loadOne)))
-                        .filter(Boolean)
-                        .filter(p=>p.lat!=null && p.lng!=null)
-                        .sort((a,b)=>b.views - a.views)
-                        .slice(0,20);
+                        .filter(Boolean)                          // Remove failed requests
+                        .filter(p => p.lat != null && p.lng != null) // Only places with coordinates
+                        .sort((a,b) => b.views - a.views)         // Sort by popularity (views)
+                        .slice(0, 20);                           // Top 20 only
 
-        setPlaces(all);
-        setPhase('loadingSaved');
+        setPlaces(all);                   // Store attractions data
+        setPhase('loadingSaved');         // Advance to next phase
       } catch(e) {
         console.error(e);
-        setPhase('error');
+        setPhase('error');               // Handle errors
       }
     })();
   }, [phase, trip]);

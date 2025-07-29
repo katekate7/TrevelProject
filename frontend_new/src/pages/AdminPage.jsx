@@ -1,80 +1,207 @@
+/**
+ * @fileoverview AdminPage component for administrative dashboard
+ * This component provides a comprehensive admin interface for managing users, items,
+ * and item requests with full CRUD operations and administrative controls.
+ */
+
 import React, { useEffect, useState } from 'react';
 import axios from '../api';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * AdminPage Component
+ * 
+ * Administrative dashboard with tabbed interface for managing:
+ * - Users (create, read, update, delete, password reset)
+ * - Items (create, read, update, delete)
+ * - Item requests (approve/reject pending requests)
+ * 
+ * Includes role-based access control and authentication guard.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered admin dashboard with tabbed interface
+ * 
+ * @example
+ * // Used for admin users only with role-based access
+ * <Route path="/admin" element={<AdminPage />} />
+ */
 export default function AdminPage() {
-  const [tab, setTab]       = useState('users');              // users | items | requests
+  /* ───────── State Management ───────── */
+  /** @type {[string, Function]} Current active tab - 'users', 'items', or 'requests' */
+  const [tab, setTab]       = useState('users');
+  
+  /** @type {[Array<Object>, Function]} Array of all users in the system */
   const [users, setUsers]   = useState([]);
+  
+  /** @type {[Array<Object>, Function]} Array of all items in the system */
   const [items, setItems]   = useState([]);
+  
+  /** @type {[Array<Object>, Function]} Array of pending item requests */
   const [requests, setRequests] = useState([]);
+  
+  /** @type {[string, Function]} Status/error message to display to admin */
   const [message, setMsg]   = useState('');
-  const [messageType, setMessageType] = useState('error'); // 'success' or 'error'
+  
+  /** @type {[string, Function]} Type of message - 'success' or 'error' */
+  const [messageType, setMessageType] = useState('error');
 
-  /* форма «новий айтем» */
+  /** @type {[Object, Function]} Form state for creating new items */
   const [newItem, setNewItem] = useState({ name: '', important: false });
 
-  /* форма «новий юзер / адмін» */
+  /** @type {[Object, Function]} Form state for creating new users/admins */
   const [newUser, setNewUser] = useState({
     username: '', email: '', role: 'user',
   });
 
+  /** React Router navigation hook for programmatic navigation */
   const nav = useNavigate();
-  // ───────── LOGOUT ─────────
+  /**
+   * Handles user logout by clearing authentication tokens
+   * Removes token from localStorage and redirects to start page
+   * 
+   * @function
+   */
+  // ───────── AUTHENTICATION ─────────
   const handleLogout = () => {
-    localStorage.removeItem('token'); // or sessionStorage, or cookie, depending on your auth
-    nav('/start');
+    localStorage.removeItem('token'); // Clear authentication token
+    nav('/start'); // Redirect to start page
   };
 
-  /* ───────── guard + первинне завантаження ───────── */
+  /**
+   * Effect hook for authentication guard and initial data loading
+   * Verifies admin role and loads all administrative data
+   * 
+   * @async
+   * @function
+   */
+  /* ───────── Authentication guard + initial data loading ───────── */
   useEffect(() => {
+    // Verify user has admin role
     axios.get('/users/me')
       .then(r => {
-        if (!r.data.roles.includes('ROLE_ADMIN')) nav('/');
-        else fetchAll();
+        // Check if user has admin role
+        if (!r.data.roles.includes('ROLE_ADMIN')) {
+          nav('/'); // Redirect non-admin users
+        } else {
+          fetchAll(); // Load all admin data
+        }
       })
-      .catch(() => nav('/'));
+      .catch(() => nav('/')); // Redirect on authentication failure
   }, []);
 
+  /**
+   * Loads all administrative data (users, items, requests)
+   * @function
+   */
   const fetchAll = () => { fetchUsers(); fetchItems(); fetchRequests(); };
-  const fetchUsers    = () => axios.get('/users').then(r => setUsers(r.data)).catch(()=>setMsg('Failed to load users'));
-  const fetchItems    = () => axios.get('/items').then(r => setItems(r.data)).catch(()=>setMsg('Failed to load items'));
-  const fetchRequests = () => axios.get('/item-requests?status=pending')
-                                   .then(r => setRequests(r.data))
-                                   .catch(()=>setMsg('Failed to load applications'));
+  
+  /**
+   * Fetches all users from the API
+   * @async
+   * @function
+   */
+  const fetchUsers = () => 
+    axios.get('/users')
+         .then(r => setUsers(r.data))
+         .catch(() => setMsg('Failed to load users'));
+  
+  /**
+   * Fetches all items from the API
+   * @async
+   * @function
+   */
+  const fetchItems = () => 
+    axios.get('/items')
+         .then(r => setItems(r.data))
+         .catch(() => setMsg('Failed to load items'));
+  
+  /**
+   * Fetches pending item requests from the API
+   * @async
+   * @function
+   */
+  const fetchRequests = () => 
+    axios.get('/item-requests?status=pending')
+         .then(r => setRequests(r.data))
+         .catch(() => setMsg('Failed to load applications'));
 
-  /* ───────── USER CRUD ───────── */
+  /**
+   * Creates a new user account with specified role
+   * Sends password reset email to new user and provides admin feedback
+   * 
+   * @async
+   * @function
+   */
+  /* ───────── USER MANAGEMENT (CRUD) ───────── */
   const createUser = () => {
     const { username, email, role } = newUser;
+    
+    // Validate required fields
     if (!username || !email) return;
+    
+    // Create user via API
     axios.post('/users', newUser)
          .then(() => { 
+           // Reset form and refresh user list
            setNewUser({ username:'', email:'', role:'user' }); 
            fetchUsers(); 
+           
+           // Show success message
            setMsg(`User ${username} created successfully. Password reset email sent to ${email}`);
            setMessageType('success');
          })
          .catch((err) => {
+           // Handle creation errors
            const errorMsg = err.response?.data?.error || 'Error creating user';
            setMsg(`Error: ${errorMsg}`);
            setMessageType('error');
          });
   };
 
+  /**
+   * Updates an existing user's information
+   * 
+   * @async
+   * @function
+   * @param {Object} u - User object with updated information
+   * @param {number} u.id - User ID
+   * @param {string} u.username - Updated username
+   * @param {string} u.email - Updated email
+   * @param {string} u.role - Updated user role
+   */
   const updateUser = u =>
     axios.put(`/users/${u.id}`, { username: u.username, email: u.email, role: u.role })
-         .then(fetchUsers)
+         .then(fetchUsers) // Refresh user list on success
          .catch(() => setMsg('Failed to update user'));
 
+  /**
+   * Deletes a user after confirmation
+   * 
+   * @async
+   * @function
+   * @param {number} id - User ID to delete
+   */
   const deleteUser = id =>
     window.confirm('Delete a user?') &&
-    axios.delete(`/users/${id}`).then(fetchUsers).catch(() => setMsg('Failed to delete user'));
+    axios.delete(`/users/${id}`)
+         .then(fetchUsers) // Refresh user list on success
+         .catch(() => setMsg('Failed to delete user'));
 
+  /**
+   * Sends password reset email to a specific user
+   * 
+   * @async
+   * @function
+   * @param {number} id - User ID to send reset email to
+   */
   const resetPwd = id => {
     const user = users.find(u => u.id === id);
     if (!user) return;
     
+    // Confirm action with admin
     if (!window.confirm(`Send password reset link to ${user.email}?`)) return;
     
+    // Send reset email
     axios.post(`/users/${id}/reset-password`)
          .then(() => {
            setMsg(`Password reset link sent to ${user.email}`);
@@ -87,31 +214,79 @@ export default function AdminPage() {
          });
   };
 
-  /* ───────── ITEM CRUD ───────── */
+  /**
+   * Creates a new item in the system
+   * 
+   * @async
+   * @function
+   */
+  /* ───────── ITEM MANAGEMENT (CRUD) ───────── */
   const addItem = () =>
     axios.post('/items', newItem)
-         .then(() => { setNewItem({ name:'', important:false }); fetchItems(); })
+         .then(() => { 
+           // Reset form and refresh items list
+           setNewItem({ name:'', important:false }); 
+           fetchItems(); 
+         })
          .catch(() => setMsg('Failed to create item'));
 
+  /**
+   * Updates an existing item's information
+   * 
+   * @async
+   * @function
+   * @param {Object} i - Item object with updated information
+   * @param {number} i.id - Item ID
+   * @param {string} i.name - Updated item name
+   * @param {boolean} i.important - Updated importance flag
+   */
   const updateItem = i =>
     axios.patch(`/items/${i.id}`, { name: i.name, important: i.important })
-         .then(fetchItems)
+         .then(fetchItems) // Refresh items list on success
          .catch(() => setMsg('Failed to update item'));
 
+  /**
+   * Deletes an item after confirmation
+   * 
+   * @async
+   * @function
+   * @param {number} id - Item ID to delete
+   */
   const deleteItem = id =>
     window.confirm('Delete item?') &&
-    axios.delete(`/items/${id}`).then(fetchItems).catch(()=>setMsg('Failed to delete item'));
+    axios.delete(`/items/${id}`)
+         .then(fetchItems) // Refresh items list on success
+         .catch(() => setMsg('Failed to delete item'));
 
-  /* ───────── REQUESTS ───────── */
+  /**
+   * Approves a pending item request
+   * Refreshes both items and requests lists after approval
+   * 
+   * @async
+   * @function
+   * @param {number} id - Request ID to approve
+   */
+  /* ───────── REQUEST MANAGEMENT ───────── */
   const approveReq = id =>
     axios.patch(`/item-requests/${id}`, { action: 'approve' })
-         .then(()=>{ fetchItems(); fetchRequests(); })
-         .catch(()=>setMsg('Failed to approve request'));
+         .then(() => { 
+           // Refresh both items and requests lists
+           fetchItems(); 
+           fetchRequests(); 
+         })
+         .catch(() => setMsg('Failed to approve request'));
 
+  /**
+   * Rejects a pending item request
+   * 
+   * @async
+   * @function
+   * @param {number} id - Request ID to reject
+   */
   const rejectReq = id =>
     axios.patch(`/item-requests/${id}`, { action: 'reject' })
-         .then(fetchRequests)
-         .catch(()=>setMsg('Failed to reject request'));
+         .then(fetchRequests) // Refresh requests list on success
+         .catch(() => setMsg('Failed to reject request'));
 
   /* ───────── UI ───────── */
   return (
@@ -228,7 +403,6 @@ export default function AdminPage() {
       {/* ---------- USERS ---------- */}
       {tab === 'users' && (
         <>
-          {/* форма «новий» - moved to top */}
           <h2 style={{ marginTop: '25px', color: 'white', fontSize: '2rem', fontWeight: 'bold' }}>Create new user / admin</h2>
           <div style={{ display:'flex', gap:5, flexWrap:'wrap', alignItems:'center', marginBottom: '30px' }}>
             <input placeholder="Username" value={newUser.username}
