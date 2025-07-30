@@ -44,6 +44,7 @@ export default function RegisterForm({ onNeedLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState(null); // Error/success message state
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for form submission
   const navigate = useNavigate();
 
   /**
@@ -57,6 +58,7 @@ export default function RegisterForm({ onNeedLogin }) {
   const handleSubmit = async e => {
     e.preventDefault();
     setMessage(null); // Clear previous messages
+    setIsSubmitting(true); // Set loading state
 
     try {
       // Register new user account
@@ -67,9 +69,11 @@ export default function RegisterForm({ onNeedLogin }) {
       // Redirect to dashboard on successful registration and login
       navigate('/dashboard');
     } catch (err) {
-      // Display registration error message
-      const msg = err.response?.data?.error || '❌ Registration error';
-      setMessage(msg);
+      // Display registration error message with detailed validation feedback
+      const errorMessage = err.response?.data?.error || '❌ Registration error';
+      setMessage(errorMessage);
+    } finally {
+      setIsSubmitting(false); // Reset loading state
     }
   };
 
@@ -78,7 +82,7 @@ export default function RegisterForm({ onNeedLogin }) {
       {/* Username input field */}
       <input
         type="text"
-        placeholder="Username"
+        placeholder="Username (3-50 characters)"
         required
         value={username}
         onChange={e => setUsername(e.target.value)}
@@ -87,6 +91,7 @@ export default function RegisterForm({ onNeedLogin }) {
           bg-white bg-opacity-90 placeholder-gray-500
           focus:outline-none focus:ring-2 focus:ring-white
         "
+        disabled={isSubmitting}
       />
 
       {/* Email input field with built-in validation */}
@@ -101,37 +106,56 @@ export default function RegisterForm({ onNeedLogin }) {
           bg-white bg-opacity-90 placeholder-gray-500
           focus:outline-none focus:ring-2 focus:ring-white
         "
+        disabled={isSubmitting}
       />
 
-      {/* Password input field */}
-      <input
-        type="password"
-        placeholder="Password"
-        required
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        className="
-          w-full rounded-lg py-3 px-4
-          bg-white bg-opacity-90 placeholder-gray-500
-          focus:outline-none focus:ring-2 focus:ring-white
-        "
-      />
+      {/* Password input field with requirements info */}
+      <div className="relative">
+        <input
+          type="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          className="
+            w-full rounded-lg py-3 px-4
+            bg-white bg-opacity-90 placeholder-gray-500
+            focus:outline-none focus:ring-2 focus:ring-white
+          "
+          disabled={isSubmitting}
+        />
+        {/* Password requirements info */}
+        <div className="mt-2 text-xs text-gray-600 bg-white bg-opacity-75 rounded-lg p-3">
+          <p className="font-semibold mb-1">Password requirements:</p>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Minimum 8 characters</li>
+            <li>1 uppercase letter (A-Z)</li>
+            <li>1 lowercase letter (a-z)</li>
+            <li>1 number (0-9)</li>
+            <li>1 special character (e.g., !, @, #, $, %, .)</li>
+          </ul>
+        </div>
+      </div>
 
       {/* Registration submit button */}
       <button
         type="submit"
-        className="
+        disabled={isSubmitting}
+        className={`
           w-full py-3 rounded-full
           bg-[#282A54] border-2 border-white text-white font-semibold
           transition hover:bg-opacity-90
-        "
+          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
+        `}
       >
-        Register
+        {isSubmitting ? 'Registering...' : 'Register'}
       </button>
 
       {/* Error message display */}
       {message && (
-        <p className="text-center text-sm text-red-600">{message.replace('Registration error', 'Registration error')}</p>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p className="text-sm text-red-800 whitespace-pre-line">{message}</p>
+        </div>
       )}
 
       {/* Switch to login form link */}
@@ -141,10 +165,12 @@ export default function RegisterForm({ onNeedLogin }) {
           <button
             type="button"
             onClick={onNeedLogin}
+            disabled={isSubmitting}
             className="
               bg-transparent p-0 m-0
               font-semibold underline hover:text-[#d14b4c]
               focus:outline-none
+              disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
             Log in

@@ -47,7 +47,7 @@ const ResetPasswordPage = () => {
   /**
    * Handles form submission for password reset
    * Performs comprehensive client-side validation before API submission
-   * Includes password matching, length, and complexity requirements
+   * Server-side validation will ensure password security requirements
    * 
    * @async
    * @function
@@ -62,14 +62,9 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    // Validation 2: Check minimum password length
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-    // Validation 3: Check for at least one letter (basic complexity)
-    if (!/(?=.*[a-zA-Z])/.test(password)) {
-      setError('Password must contain at least one letter');
+    // Validation 2: Check minimum password length (basic check, server will do comprehensive validation)
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
       return;
     }
 
@@ -80,6 +75,7 @@ const ResetPasswordPage = () => {
 
     try {
       // Submit password reset request to API with token validation
+      // Server will perform comprehensive password strength validation
       const response = await api.post(`/users/reset-password-token/${token}`, {
         password: password
       });
@@ -91,9 +87,9 @@ const ResetPasswordPage = () => {
       }, 3000);
       
     } catch (err) {
-      // Handle API errors with specific error messages
+      // Handle API errors with specific error messages from server
       if (err.response?.data?.error) {
-        setError(err.response.data.error); // Server-provided error message
+        setError(err.response.data.error); // Server-provided detailed error message
       } else {
         setError('An error occurred. Please try again.'); // Generic fallback
       }
@@ -136,7 +132,20 @@ const ResetPasswordPage = () => {
                 placeholder="New Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
+              
+              {/* Password requirements info */}
+              <div className="mt-2 text-xs text-gray-600 bg-gray-50 rounded-md p-3">
+                <p className="font-semibold mb-1">Password requirements:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Minimum 8 characters</li>
+                  <li>1 uppercase letter (A-Z)</li>
+                  <li>1 lowercase letter (a-z)</li>
+                  <li>1 number (0-9)</li>
+                  <li>1 special character (e.g., !, @, #, $, %, .)</li>
+                </ul>
+              </div>
             </div>
             
             {/* Password confirmation input field */}
@@ -153,6 +162,7 @@ const ResetPasswordPage = () => {
                 placeholder="Confirm your new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
           </div>
@@ -160,7 +170,7 @@ const ResetPasswordPage = () => {
           {/* Error message display */}
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
+              <p className="whitespace-pre-line">{error}</p>
             </div>
           )}
 
