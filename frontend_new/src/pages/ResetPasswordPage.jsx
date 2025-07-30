@@ -67,7 +67,6 @@ const ResetPasswordPage = () => {
       setError('Password must be at least 6 characters long');
       return;
     }
-
     // Validation 3: Check for at least one letter (basic complexity)
     if (!/(?=.*[a-zA-Z])/.test(password)) {
       setError('Password must contain at least one letter');
@@ -84,10 +83,8 @@ const ResetPasswordPage = () => {
       const response = await api.post(`/users/reset-password-token/${token}`, {
         password: password
       });
-
       // Success: Show confirmation message and auto-redirect
       setMessage('Password has been successfully changed! Redirecting to the login page...');
-      
       // Auto-redirect to login page after 3 seconds
       setTimeout(() => {
         navigate('/start');
