@@ -21,7 +21,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/start" element={<Home />} />
-      <Route path="/" element={<Navigate to="/start" />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/first-trip" element={<FirstTripPage />} />
