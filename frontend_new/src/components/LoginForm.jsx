@@ -85,7 +85,7 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
           transition hover:bg-opacity-90
         "
       >
-        Login
+        Log in
       </button>
 
       {/* Error message */}
@@ -105,7 +105,7 @@ export default function LoginForm({ onNeedRegister, onForgotPassword }) {
               font-semibold underline hover:text-[#d14b4c]
               focus:outline-none ml-1"
           >
-            Sign in
+            Sign up
           </button>
         </span>
         <button
