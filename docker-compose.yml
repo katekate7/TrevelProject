@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  frontend:
+    build: ./frontend_new
+    ports:
+      - "5177:5177"
+    networks:
+      - app-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:80"
+    networks:
+      - app-network
+    depends_on:
+      - db
+
   db:
     image: mysql:8.0
     container_name: travel_db
@@ -24,3 +40,8 @@ services:
 
 volumes:
   db_data:
+
+networks:
+  app-network:
+    driver: bridge
+
