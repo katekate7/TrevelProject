@@ -49,7 +49,7 @@ export default function TripsListPage({
       cancel();
     } catch (e) {
       console.error(e);
-      alert('Не вдалося зберегти');
+      alert('Could not save trip dates');
     } finally { setBusy(false); }
   };
 
@@ -98,7 +98,7 @@ export default function TripsListPage({
               <div className="space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-white">Початок</label>
+                    <label className="text-xs text-white">Starting</label>
                     <input
                       type="date"
                       value={tmpStart}
@@ -108,7 +108,7 @@ export default function TripsListPage({
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-white">Завершення</label>
+                    <label className="text-xs text-white">Finishing</label>
                     <input
                       type="date"
                       value={tmpEnd}
@@ -125,14 +125,14 @@ export default function TripsListPage({
                     disabled={busy}
                     className="px-4 py-2 bg-[#FF9091] text-white rounded hover:bg-[#e6818c] disabled:opacity-50"
                   >
-                    {busy ? 'Збереження…' : 'Зберегти'}
+                    {busy ? 'Saving…' : 'Save'}
                   </button>
                   <button
                     onClick={cancel}
                     className="px-4 py-2 text-gray-300 hover:text-white"
                     disabled={busy}
                   >
-                    Скасувати
+                    Cancel
                   </button>
                 </div>
               </div>
