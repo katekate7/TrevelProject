@@ -11,7 +11,6 @@ import {
   MapContainer, TileLayer, Polyline, Marker, Popup
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import openrouteservice from 'openrouteservice-js';
 import { fetchTripPlaces } from '../api';
 
 /**
@@ -55,24 +54,39 @@ export default function TripRoutePage() {
     setLoading(true);
 
     (async () => {
-      // Initialize routing service
-      const ors = new openrouteservice.Directions({
-        api_key: import.meta.env.VITE_ORS_API_KEY,
-      });
-
       // Convert waypoints to [lng, lat] format
       const coords = waypoints.map(w => [w.lng, w.lat]);
 
       try {
-        // Get route from OpenRouteService
-        const res = await ors.calculate({
-          coordinates: coords,
-          profile: mode,
-          format: 'geojson',
+        // Use direct fetch instead of openrouteservice-js library
+        const apiKey = import.meta.env.VITE_ORS_API_KEY;
+        console.log('Using API key:', apiKey ? 'Set' : 'Not set');
+        console.log('Calculating route for mode:', mode);
+        console.log('Waypoints:', coords);
+        
+        const response = await fetch(`https://api.openrouteservice.org/v2/directions/${mode}/geojson`, {
+          method: 'POST',
+          headers: {
+            'Authorization': apiKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            coordinates: coords,
+            format: 'geojson'
+          })
         });
 
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API Error Response:', errorText);
+          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Route data received:', data);
+        
         // Convert coordinates for Leaflet map [lat, lng]
-        const line = res.features[0].geometry.coordinates.map(
+        const line = data.features[0].geometry.coordinates.map(
           ([lng, lat]) => [lat, lng]
         );
 
@@ -81,7 +95,7 @@ export default function TripRoutePage() {
           setLoading(false);
         }
       } catch (error) {
-        console.error('Route calculation failed:', error.response?.data || error.message);
+        console.error('Route calculation failed:', error);
         if (!canceled) setLoading(false);
       }
     })();
