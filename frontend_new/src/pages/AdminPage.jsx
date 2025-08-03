@@ -63,7 +63,7 @@ export default function AdminPage() {
    */
   // ───────── AUTHENTICATION ─────────
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear authentication token
+    localStorage.removeItem('jwt_token'); // Clear authentication token
     nav('/start'); // Redirect to start page
   };
 

@@ -64,7 +64,12 @@ export default function RegisterForm({ onNeedLogin }) {
       // Register new user account
       await api.post('/users/register', { username, email, password });
       // Automatically log in the newly registered user
-      await api.post('/login', { email, password });
+      const loginResponse = await api.post('/login', { email, password });
+      
+      // Store the JWT token if provided - CRITICAL FOR SECURITY
+      if (loginResponse.data.token) {
+        localStorage.setItem('jwt_token', loginResponse.data.token);
+      }
 
       // Redirect to dashboard on successful registration and login
       navigate('/dashboard');
