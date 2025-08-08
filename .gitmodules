@@ -1,7 +1,8 @@
-[submodule "Backend"]
-	path = Backend
+[submodule "backend"]
+	path = backend
 	url = https://github.com/katekate7/TrevelProject-Backend.git
 	branch = main
-[submodule "Frontend"]
-	path = Frontend
+[submodule "frontend"]
+	path = frontend
 	url = https://github.com/katekate7/TrevelProject-Frontend.git
+	branch = main
