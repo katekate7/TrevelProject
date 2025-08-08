@@ -3,7 +3,5 @@
 	url = https://github.com/katekate7/TrevelProject-Backend.git
 	branch = main
 [submodule "Frontend"]
-    path = Frontend
-    url = https://github.com/katekate7/TrevelProject-Frontend.git
-    branch = main
-
+	path = Frontend
+	url = https://github.com/katekate7/TrevelProject-Frontend.git
