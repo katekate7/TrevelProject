@@ -368,76 +368,91 @@ newgrp docker
 ### 6.4 Déploiement avec Docker Compose
 
 ```bash
-# Création d'un répertoire pour le projet
-mkdir -p /home/utilisateur/trevel
-cd /home/utilisateur/trevel
+# Connexion SSH au serveur distant (remplacez <utilisateur> et <IP_adresse> par vos valeurs)
+ssh <utilisateur>@<IP_adresse>
 
-# Création du fichier docker-compose.yml
-nano docker-compose.yml
+# Récupération du fichier docker-compose directement depuis un référentiel
+# Adaptez cette URL avec votre propre référentiel si nécessaire
+curl https://raw.githubusercontent.com/fredericBui/symfony_react_docker_compose_deployment/refs/heads/main/compose.yaml -o compose.yaml
+
+# Lancement des containers
+docker compose up -d
 ```
 
-Contenu du fichier docker-compose.yml sur le serveur (utilisant les images de DockerHub):
-
-```yaml
-version: '3.8'
-
-services:
-  db:
-    image: katekate7/trevel-db:latest
-    container_name: trevel_db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: travel_db
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_password
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - trevel_network
-
-  backend:
-    image: katekate7/trevel-backend:latest
-    container_name: trevel_backend
-    restart: unless-stopped
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: mysql://app_user:app_password@db:3306/travel_db
-      JWT_SECRET_KEY: '%kernel.project_dir%/config/jwt/private.pem'
-      JWT_PUBLIC_KEY: '%kernel.project_dir%/config/jwt/public.pem'
-      JWT_PASSPHRASE: 'your_passphrase'
-      APP_ENV: prod
-    networks:
-      - trevel_network
-
-  frontend:
-    image: katekate7/trevel-frontend:latest
-    container_name: trevel_frontend
-    restart: unless-stopped
-    depends_on:
-      - backend
-    ports:
-      - "80:80"
-    networks:
-      - trevel_network
-
-networks:
-  trevel_network:
-    driver: bridge
-
-volumes:
-  db_data:
-```
-
-Lancement des containers:
+Une fois les containers démarrés, vous devez configurer la base de données:
 
 ```bash
-# Téléchargement et lancement des containers
-docker-compose up -d
+# Accès au container backend (remplacez 'trevel_backend' par le nom de votre container)
+docker exec -it trevel_backend bash
 
-# Vérification des logs
-docker-compose logs -f
+# Suppression des migrations existantes et création de nouvelles migrations
+rm -Rf migrations
+mkdir migrations
+php bin/console make:migration
+php bin/console doctrine:migrations:migrate
+```
+
+Après déploiement, vous pouvez accéder à:
+- Frontend: http://<IP_Adresse>:3000/
+- Backend API: http://<IP_Adresse>:8089/
+
+### 6.4.1 Test de l'API
+
+Vous pouvez tester l'API avec les commandes curl suivantes:
+
+```bash
+# Exemple de création d'une ressource (POST)
+curl -X 'POST' \
+  'http://<IP_Adresse>:8089/api/posts' \
+  -H 'accept: application/ld+json' \
+  -H 'Content-Type: application/ld+json' \
+  -d '{
+  "content": "hello world"
+}'
+
+# Exemple de récupération de ressources (GET)
+curl -X 'GET' \
+  'http://<IP_Adresse>:8089/api/posts?page=1' \
+  -H 'accept: application/ld+json'
+```
+
+### 6.4.2 Automatisation des déploiements avec Jenkins
+
+Pour mettre en place un système d'intégration continue:
+
+```bash
+# Création et démarrage du répertoire pour CI/CD
+mkdir -p cicd
+cd cicd
+# Ajoutez ici votre fichier docker-compose pour Jenkins
+docker compose up -d
+
+# Vérification des logs de Jenkins
+docker logs jenkins_container
+
+# Construction de l'image pour l'agent Jenkins
+docker build . -t jenkins_agent
+
+# Inspection du container Jenkins pour obtenir l'adresse IP
+docker inspect jenkins_container
+
+# Lancement de l'agent Jenkins
+# Remplacez <IP_adress_jenkins_container>, <secret> et <agent name> par vos valeurs
+docker run --init --name jenkins_agent_container --network cicd_network \
+  -v /var/run/docker.sock:/var/run/docker.sock jenkins_agent \
+  -url http://<IP_adress_jenkins_container>:8080 <secret> <agent name>
+```
+
+### 6.4.3 Suppression des déploiements
+
+Si vous souhaitez supprimer votre déploiement:
+
+```bash
+# Arrêt des containers
+docker compose down
+
+# Suppression du volume de la base de données
+docker volume rm root_db_data
 ```
 
 ### 6.5 Configuration d'un nom de domaine (optionnel)
