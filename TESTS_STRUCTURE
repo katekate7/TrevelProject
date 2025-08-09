@@ -1,0 +1,151 @@
+# Structure des Tests du Projet TrevelProject
+
+Ce document décrit la structure des tests dans le projet TrevelProject, en identifiant les dossiers concernés et en expliquant le but et l'implémentation de chaque type de test.
+
+## Vue d'ensemble des dossiers de tests
+
+### Tests Backend
+
+Les tests du backend sont organisés dans deux dossiers principaux :
+
+1. **`/backend/tests/`** - Tests internes à l'application Symfony
+2. **`/tests/backend/`** - Tests complémentaires ou de niveau supérieur
+
+### Tests Frontend
+
+Les tests du frontend sont concentrés dans :
+
+**`/Frontend/src/test/`** - Tests unitaires et d'intégration des composants React
+
+## Structure détaillée et objectifs
+
+### Backend - Tests Symfony (`/backend/tests/`)
+
+#### Controller Tests (`/backend/tests/Controller/`)
+
+**Objectif** : Vérifier que les contrôleurs API reçoivent correctement les requêtes et renvoient les réponses attendues.
+
+**Contenu** :
+- Tests des endpoints REST API (`Api/`)
+- Validation des formats de réponse JSON
+- Vérification des codes de statut HTTP
+- Tests des validations d'entrée
+
+**Pourquoi ici** : Ces tests sont placés ici pour suivre la convention Symfony, en miroir de la structure des contrôleurs dans `/src/Controller/`.
+
+#### Security Tests (`/backend/tests/Security/`)
+
+**Objectif** : S'assurer que les mécanismes d'authentification et d'autorisation fonctionnent correctement.
+
+**Contenu** :
+- Tests du système de login/logout
+- Vérification des tokens JWT
+- Tests des permissions et des rôles
+- Validation de la gestion des sessions
+
+**Pourquoi ici** : Tests spécifiques à la sécurité interne du framework Symfony.
+
+### Tests Backend complémentaires (`/tests/backend/`)
+
+#### Integration Tests (`/tests/backend/Integration/`)
+
+**Objectif** : Tester l'intégration entre différents services et composants.
+
+**Contenu** :
+- `CitySearchIntegrationTest.php` - Tests de l'intégration avec les API de recherche de villes
+- `TripApiIntegrationTest.php` - Tests complets des API de voyage
+- `TripIntegrationTest.php` - Tests des flux de création et gestion de voyages
+
+**Pourquoi ici** : Ces tests dépassent le cadre des tests unitaires simples et vérifient comment les composants interagissent entre eux.
+
+#### Security Tests (`/tests/backend/Security/`)
+
+**Objectif** : Tests de sécurité avancés et spécialisés.
+
+**Contenu** :
+- `CitySearchTripCreationSecurityTest.php` - Vérification des aspects sécuritaires lors de la création de voyages
+- `SecurityServiceTest.php` - Tests des services de sécurité personnalisés
+- `XSSSecurityTest.php` - Tests contre les attaques par injection de scripts
+
+**Pourquoi ici** : Ces tests se concentrent sur des vulnérabilités de sécurité spécifiques qui pourraient affecter l'application.
+
+#### Service Tests (`/tests/backend/Service/`)
+
+**Objectif** : Vérifier le bon fonctionnement des services métier.
+
+**Contenu** :
+- `CitySearchTripCreationServiceTest.php` - Tests du service de création de voyage basé sur la recherche de ville
+- `TripServiceTest.php` - Tests des fonctionnalités du service de gestion des voyages
+
+**Pourquoi ici** : Ces tests s'assurent que la logique métier implémentée dans les services fonctionne correctement.
+
+### Frontend - Tests React (`/Frontend/src/test/`)
+
+#### Component Tests (`/Frontend/src/test/components/`)
+
+**Objectif** : Tester les composants React individuellement.
+
+**Contenu** :
+- `LoginForm.test.jsx` - Tests du formulaire de connexion
+- `RegisterForm.test.jsx` - Tests du formulaire d'inscription
+
+**Pourquoi ici** : Ces tests vérifient que les composants React se comportent comme prévu, qu'ils affichent correctement les données et répondent correctement aux interactions utilisateur.
+
+#### Page Tests (`/Frontend/src/test/pages/`)
+
+**Objectif** : Tester les pages complètes de l'application.
+
+**Contenu** :
+- `Home.test.jsx` - Tests de la page d'accueil
+
+**Pourquoi ici** : Ces tests s'assurent que les pages assemblent correctement les composants et gèrent correctement les états et les interactions.
+
+#### Setup (`/Frontend/src/test/setup.js`)
+
+**Objectif** : Configurer l'environnement de test pour React.
+
+**Contenu** :
+- Configuration de l'environnement de test
+- Mocks globaux pour les API
+- Utilitaires de test réutilisables
+
+**Pourquoi ici** : Ce fichier assure que tous les tests frontend partagent la même configuration, rendant les tests plus cohérents.
+
+## Outils et technologies de test
+
+### Backend
+
+- **PHPUnit** : Framework de test pour PHP
+- **Symfony WebTestCase** : Pour tester les contrôleurs et les requêtes HTTP
+- **Doctrine DataFixtures** : Pour préparer les données de test
+
+### Frontend
+
+- **Jest/Vitest** : Framework de test JavaScript
+- **React Testing Library** : Pour tester les composants React
+- **MSW (Mock Service Worker)** : Pour simuler les appels API
+
+## Exécution des tests
+
+### Backend
+
+```bash
+# Dans le dossier backend
+php bin/phpunit
+```
+
+### Frontend
+
+```bash
+# Dans le dossier Frontend
+npm test
+```
+
+## Intégration continue
+
+Les tests sont automatiquement exécutés dans les pipelines CI/CD :
+
+- **GitHub Actions** : `.github/workflows/backend.yml` et `.github/workflows/frontend.yml`
+- **Jenkins** : Configurations dans les fichiers `Jenkinsfile` à la racine et dans les dossiers backend et Frontend
+
+Cette structure de tests assure une couverture complète des fonctionnalités du projet, garantissant ainsi sa qualité et sa fiabilité.

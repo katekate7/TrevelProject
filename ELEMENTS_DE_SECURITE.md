@@ -1,4 +1,4 @@
-# ÉLÉMENTS DE SÉCURITÉ DE L'APPLICATION
+# ELEMENTS DE SECURITE DE L'APPLICATION
 
 ## Introduction
 
@@ -298,6 +298,294 @@ Notre application respecte les principales recommandations de l'Agence Nationale
 - **Mise en œuvre d'en-têtes de sécurité HTTP**: Configuration des en-têtes comme X-XSS-Protection, X-Content-Type-Options, etc.
 
 ### 2.3 Référentiel Général d'Amélioration de l'Accessibilité (RGAA)
+
+## 3. ARCHITECTURE DE SÉCURITÉ IMPLÉMENTÉE
+
+### PROTECTION DES DONNÉES UTILISATEURS
+
+#### Chiffrement des mots de passe
+L'application utilise le système de hachage automatique de Symfony avec les algorithmes bcrypt ou Argon2. Les mots de passe ne sont jamais stockés en clair dans la base de données. Le système génère automatiquement des hashs sécurisés lors de l'enregistrement et de la modification des mots de passe.
+
+```php
+// Dans config/packages/security.yaml
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: 'auto'
+            cost: 12
+```
+
+#### Authentification JWT
+Le système d'authentification repose sur les JSON Web Tokens avec des clés privées et publiques stockées dans des fichiers séparés. Les tokens sont générés lors de la connexion et vérifiés automatiquement pour chaque requête nécessitant une authentification.
+
+```php
+// Dans config/packages/lexik_jwt_authentication.yaml
+lexik_jwt_authentication:
+    secret_key: '%env(resolve:JWT_SECRET_KEY)%'
+    public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
+    pass_phrase: '%env(JWT_PASSPHRASE)%'
+    token_ttl: 3600 # 1 heure
+```
+
+#### Cookies sécurisés
+La configuration prévoit des cookies HttpOnly, Secure pour HTTPS, et SameSite strict pour éviter les attaques CSRF. Les sessions sont configurées avec des paramètres de sécurité renforcés.
+
+```php
+// Dans config/packages/framework.yaml
+framework:
+    session:
+        cookie_secure: true
+        cookie_httponly: true
+        cookie_samesite: 'strict'
+```
+
+### GESTION DES ACCÈS ET DROITS UTILISATEURS
+
+#### Système de rôles
+L'application implémente un système de rôles avec ROLE_USER pour les utilisateurs authentifiés et des contrôles d'accès différenciés selon les fonctionnalités. Certains endpoints sont publics, d'autres nécessitent une authentification.
+
+```php
+// TripController.php
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
+public function list(): JsonResponse
+{
+    // Accessible uniquement aux utilisateurs authentifiés
+}
+```
+
+#### Contrôle de propriété des données
+Chaque utilisateur ne peut accéder qu'à ses propres données de voyage. Le système vérifie systématiquement que l'utilisateur connecté est bien le propriétaire des ressources demandées avant d'autoriser l'accès.
+
+```php
+// Vérification de propriété des données
+if (!$trip || $trip->getUser() !== $this->getUser()) {
+    return $this->json(['error' => 'Trip not found'], 404);
+}
+```
+
+#### Firewall Symfony
+La configuration de sécurité inclut un firewall pour les routes API avec authentification JWT obligatoire pour les endpoints sensibles. Les règles d'accès sont définies par patterns d'URL et rôles requis.
+
+```php
+// Dans config/packages/security.yaml
+security:
+    firewalls:
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+    access_control:
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+```
+
+#### Middleware d'authentification
+Utilisation des attributs Symfony IsGranted pour sécuriser automatiquement les contrôleurs et méthodes nécessitant une authentification ou des rôles spécifiques.
+
+```php
+// AdminController.php
+#[Route('/api/admin')]
+#[IsGranted('ROLE_ADMIN')]
+class AdminController extends AbstractController
+{
+    // Toutes les méthodes nécessitent ROLE_ADMIN
+}
+```
+
+### PROTECTION CONTRE LES FAILLES COURANTES
+
+#### Protection XSS
+Le système utilise la fonction strip_tags pour nettoyer les données entrantes et l'échappement automatique des templates Twig. Toutes les sorties sont sécurisées par défaut contre les injections de script.
+
+```php
+// Nettoyage des entrées utilisateur
+$cleanDescription = strip_tags($request->request->get('description'));
+```
+
+#### Protection CSRF
+Symfony fournit une protection CSRF activée au niveau global avec génération automatique de tokens pour toutes les requêtes sensibles. La configuration est activée dans les fichiers de sécurité.
+
+```php
+// Dans config/packages/framework.yaml
+framework:
+    csrf_protection: true
+```
+
+#### Protection SQL Injection
+L'utilisation exclusive de l'ORM Doctrine avec des paramètres liés automatiquement élimine les risques d'injection SQL. Toutes les requêtes passent par des méthodes sécurisées du repository.
+
+```php
+// TripRepository.php
+public function findByUserAndCity(User $user, string $city)
+{
+    return $this->createQueryBuilder('t')
+        ->andWhere('t.user = :user')
+        ->andWhere('t.city = :city')
+        ->setParameter('user', $user)
+        ->setParameter('city', $city)
+        ->getQuery()
+        ->getResult();
+}
+```
+
+#### Protection contre le brute force
+Le système limite naturellement les tentatives d'accès par l'authentification JWT obligatoire et la vérification de propriété des données. Un utilisateur ne peut pas accéder aux données d'autres utilisateurs.
+
+```php
+// Dans config/packages/rate_limiter.yaml
+framework:
+    rate_limiter:
+        login:
+            policy: 'fixed_window'
+            limit: 5
+            interval: '15 minutes'
+```
+
+### VÉRIFICATION ET VALIDATION DES ENTRÉES UTILISATEUR
+
+#### Validation backend Symfony
+Tous les endpoints valident la structure JSON des requêtes, vérifient la présence des champs obligatoires, et retournent des messages d'erreur appropriés. La validation inclut les types de données et les contraintes métier.
+
+```php
+// TripController.php
+$data = json_decode($request->getContent(), true);
+if (!$data) {
+    return $this->json(['error' => 'Invalid JSON format'], 400);
+}
+
+// Validation des champs obligatoires
+foreach (['country', 'city', 'startDate', 'endDate'] as $field) {
+    if (empty($data[$field])) {
+        return $this->json(['error' => "Missing field: $field"], 400);
+    }
+}
+```
+
+#### Validation frontend React
+L'interface utilisateur inclut des validations côté client pour les mots de passe avec critères de complexité minimum, vérification de correspondance des mots de passe, et validation des formats de données avant envoi.
+
+```jsx
+// ResetPasswordPage.jsx
+// Validation de complexité du mot de passe
+if (password.length < 6) {
+    setError('Password must be at least 6 characters long');
+    return;
+}
+if (!/(?=.*[a-zA-Z])/.test(password)) {
+    setError('Password must contain at least one letter');
+    return;
+}
+// API avec token de réinitialisation
+await api.post(`/users/reset-password-token/${token}`, { password });
+```
+
+#### Contraintes de routes
+Les routes utilisent des expressions régulières pour valider les paramètres d'URL, notamment pour s'assurer que les identifiants sont bien numériques et dans le format attendu.
+
+```php
+// TripController.php
+#[Route('/{id<\d+>}', name: 'get', methods: ['GET'])]
+public function getTrip(int $id): JsonResponse
+{
+    // La route garantit que $id est numérique
+}
+```
+
+#### Sanitisation des données
+Toutes les données entrantes sont nettoyées avec trim et strip_tags pour éliminer les caractères dangereux et les balises HTML potentiellement malveillantes.
+
+```php
+// Nettoyage des données sightseeings
+$cleanTitles = array_map(fn($t) => trim(strip_tags($t)), $titles);
+```
+
+### MESURES COMPLÉMENTAIRES
+
+#### Gestion sécurisée des secrets
+Les clés API et secrets sont stockés dans des variables d'environnement séparées du code source. Les fichiers de configuration contiennent des références aux variables d'environnement plutôt que des valeurs en dur.
+
+```php
+// Dans .env
+API_KEY=your_secret_key_here
+
+// Dans config
+$apiKey = $_ENV['API_KEY'];
+```
+
+#### Logging sécurisé
+Les logs d'erreur ne révèlent pas d'informations sensibles sur la structure interne de l'application ou les données utilisateur. Les messages d'erreur sont génériques pour éviter la divulgation d'informations.
+
+```php
+// Gestion d'erreurs sécurisée
+try {
+    $response = $this->httpClient->request('GET', $apiUrl);
+} catch (\Exception $e) {
+    // Log l'erreur en interne mais sans détails sensibles
+    $this->logger->error('External API error', ['service' => 'weather']);
+    return $this->json(['error' => 'Service temporarily unavailable'], 503);
+}
+```
+
+#### Configuration CORS
+La configuration Cross-Origin Resource Sharing est définie pour autoriser uniquement les domaines légitimes et les méthodes HTTP nécessaires au fonctionnement de l'application.
+
+```php
+// Dans config/packages/nelmio_cors.yaml
+nelmio_cors:
+    defaults:
+        origin_regex: true
+        allow_origin: ['^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$']
+        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+        allow_headers: ['Content-Type', 'Authorization']
+        expose_headers: ['Link']
+        max_age: 3600
+```
+
+#### Headers de sécurité
+L'application utilise des headers de sécurité appropriés pour les requêtes vers les APIs externes et configure les réponses avec des headers sécurisés.
+
+```php
+// API externe avec User-Agent
+$options = [
+    'headers' => [
+        'User-Agent' => 'TravelApp (+https://your-app.example)'
+    ]
+];
+
+// Headers de sécurité pour les réponses
+$response = new Response();
+$response->headers->set('X-Content-Type-Options', 'nosniff');
+$response->headers->set('X-Frame-Options', 'DENY');
+```
+
+### PROTECTION DES API EXTERNES
+
+#### Gestion des requêtes externes
+Les requêtes vers des API tierces sont encapsulées dans des services dédiés avec une gestion d'erreur appropriée.
+
+```php
+// WeatherService.php
+public function getWeatherData(string $city)
+{
+    $apiUrl = sprintf('%s?q=%s&appid=%s', $this->apiBaseUrl, urlencode($city), $this->apiKey);
+    
+    try {
+        $response = $this->httpClient->request('GET', $apiUrl, [
+            'headers' => [
+                'User-Agent' => 'TravelApp (+https://your-app.example)'
+            ]
+        ]);
+        
+        return $response->toArray();
+    } catch (\Exception $e) {
+        // Gestion d'erreur silencieuse
+        $this->logger->warning('Weather API error', ['city' => $city]);
+        return null;
+    }
+}
+```
+
+Cette architecture de sécurité multicouche assure une protection robuste contre les principales vulnérabilités web tout en maintenant une expérience utilisateur fluide et performante.
 
 Bien que principalement axé sur l'accessibilité, le RGAA comporte également des éléments liés à la sécurité:
 
