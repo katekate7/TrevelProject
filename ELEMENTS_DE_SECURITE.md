@@ -467,8 +467,8 @@ L'interface utilisateur inclut des validations côté client pour les mots de pa
 ```jsx
 // ResetPasswordPage.jsx
 // Validation de complexité du mot de passe
-if (password.length < 6) {
-    setError('Password must be at least 6 characters long');
+if (password.length < 8) {
+    setError('Password must be at least 8 characters long');
     return;
 }
 if (!/(?=.*[a-zA-Z])/.test(password)) {
